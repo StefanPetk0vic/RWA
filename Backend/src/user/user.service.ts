@@ -44,6 +44,33 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
+  async getBalance(token: string) {
+    const decoded = await this.jwtService.verifyAsync<AuthJwtPayload>(token);
+    const userId = decoded.sub;
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found!');
+    return user.Credit;
+  }
+
+  async getUserTransactions(token: string) {
+    const decoded = await this.jwtService.verifyAsync<AuthJwtPayload>(token);
+    const userId = decoded.sub;
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['transactions'],
+    });
+    return user?.transactions ?? [];
+  }
+  async getUserBets(token: string) {
+    const decoded = await this.jwtService.verifyAsync<AuthJwtPayload>(token);
+    const userId = decoded.sub;
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['bets'],
+    });
+    return user?.bets ?? [];
+  }
+
   async GetUser(email: string): Promise<ReturnUserDto | null>;
   async GetUser(id: number): Promise<ReturnUserDto | null>;
   async GetUser(param: string | number): Promise<ReturnUserDto | null> {

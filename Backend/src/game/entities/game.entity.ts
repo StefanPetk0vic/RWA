@@ -26,6 +26,9 @@ export class Game {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @Column()
+  developer: boolean;
+
   @OneToMany(() => Round, (round) => round.game)
   rounds: Round[];
 }

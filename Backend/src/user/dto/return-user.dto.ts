@@ -1,4 +1,6 @@
 import { Expose, Type } from 'class-transformer';
+import { Bet } from 'src/bet/entities/bet.entity';
+import { Transaction } from 'src/transaction/entities/transaction.entity';
 export class ReturnUserDto {
   @Expose()
   firstName: string;
@@ -8,4 +10,14 @@ export class ReturnUserDto {
   username: string;
   @Expose()
   email: string;
+  @Expose()
+  credits: string;
+  @Expose()
+  freeSpins: string;
+
+  @Expose()
+  transactions: Transaction;
+
+  @Expose()
+  bets: Bet;
 }

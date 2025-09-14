@@ -8,12 +8,12 @@ export class GameSeeder {
   constructor(@InjectRepository(Game) private gameRepo: Repository<Game>) {}
   async seed() {
     const games = [
-      { name: 'Poker', enabled: false },
-      { name: 'Blackjack', enabled: false },
-      { name: 'Roulette', enabled: false },
-      { name: 'PokerDev', enabled: true },
-      { name: 'BlackjackDev', enabled: true },
-      { name: 'RouletteDev', enabled: true },
+      { name: 'Poker', enabled: false, developer: false },
+      { name: 'Blackjack', enabled: false, developer: false },
+      { name: 'Roulette', enabled: false, developer: false },
+      { name: 'PokerDev', enabled: true, developer: true },
+      { name: 'BlackjackDev', enabled: true, developer: true },
+      { name: 'RouletteDev', enabled: true, developer: true },
     ];
     for (const g of games) {
       const exists = await this.gameRepo.findOne({ where: { name: g.name } });

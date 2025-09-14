@@ -51,7 +51,33 @@ export class UserController {
       throw new BadRequestException('no token sent!');
     }
     await this.userService.updateUser(data, token);
-    return res.status(200).json({ message: 'User registered successfully' });
+    return res.status(200).json({ message: 'User updated successfully' });
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('me/balance')
+  async getBalance(@Req() req: Request) {
+    const token = req.cookies.jwt;
+    if (!token) throw new BadRequestException('No token sent!');
+    return await this.userService.getBalance(token);
+  }
+
+  //Get all bets of logged-in user
+  @UseGuards(AuthGuard)
+  @Get('me/bets')
+  async getMyBets(@Req() req: Request) {
+    const token = req.cookies.jwt;
+    if (!token) throw new BadRequestException('No token sent!');
+    return this.userService.getUserBets(token);
+  }
+
+  //Get transaction history
+  @UseGuards(AuthGuard)
+  @Get('me/transactions')
+  async getMyTransactions(@Req() req: Request) {
+    const token = req.cookies.jwt;
+    if (!token) throw new BadRequestException('No token sent!');
+    return this.userService.getUserTransactions(token);
   }
 
   @Get()
