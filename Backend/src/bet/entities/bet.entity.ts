@@ -10,7 +10,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 
-enum BetType {
+export enum BetType {
   PENDING = 'pending',
   WON = 'won',
   LOST = 'lost',

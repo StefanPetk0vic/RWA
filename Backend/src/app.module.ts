@@ -13,8 +13,6 @@ import { Bet } from './bet/entities/bet.entity';
 import { Transaction } from './transaction/entities/transaction.entity';
 import { Round } from './round/entities/round.entity';
 import { DatabaseModule } from './database.module';
-import { Follow } from './user/entities/follow.entity';
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -25,7 +23,7 @@ import { Follow } from './user/entities/follow.entity';
     GameModule,
     RoundModule,
     DatabaseModule,
-    TypeOrmModule.forFeature([User, Game, Bet, Transaction, Round, Follow]),
+    TypeOrmModule.forFeature([User, Game, Bet, Transaction, Round]),
   ],
   controllers: [],
   providers: [],

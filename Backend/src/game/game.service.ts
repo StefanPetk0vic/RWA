@@ -12,4 +12,7 @@ export class GameService {
   async FindAll() {
     return await this.gameRepository.find();
   }
+  async getEnabledGames(): Promise<Game[]> {
+    return this.gameRepository.find({ where: { enabled: true } });
+  }
 }

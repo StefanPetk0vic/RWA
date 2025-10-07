@@ -6,7 +6,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Follow } from './follow.entity';
 import { Transaction } from 'src/transaction/entities/transaction.entity';
 import { Bet } from 'src/bet/entities/bet.entity';
 
@@ -56,12 +55,6 @@ export class User {
 
   @Column({ default: 5 })
   freeSpin: number;
-
-  @OneToMany(() => Follow, (follow) => follow.follower)
-  following: User[];
-
-  @OneToMany(() => Follow, (follow) => follow.following)
-  followers: User[];
 
   @OneToMany(() => Transaction, (transaction) => transaction.user)
   transactions: Transaction[];

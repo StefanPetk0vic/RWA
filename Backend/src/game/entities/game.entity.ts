@@ -6,7 +6,6 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
 } from 'typeorm';
 
 @Entity()
@@ -27,7 +26,7 @@ export class Game {
   updatedAt: Date;
 
   @Column()
-  developer: boolean;
+  developer: boolean; //is the game ment to be used for testing
 
   @OneToMany(() => Round, (round) => round.game)
   rounds: Round[];

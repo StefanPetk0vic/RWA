@@ -6,7 +6,6 @@ import { Bet } from './bet/entities/bet.entity';
 import { Game } from './game/entities/game.entity';
 import { Round } from './round/entities/round.entity';
 import { Transaction } from './transaction/entities/transaction.entity';
-import { Follow } from './user/entities/follow.entity';
 
 @Module({
   imports: [
@@ -20,7 +19,7 @@ import { Follow } from './user/entities/follow.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User, Bet, Game, Round, Transaction, Follow],
+        entities: [User, Bet, Game, Round, Transaction],
         synchronize: true,
       }),
     }),

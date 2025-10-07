@@ -23,4 +23,9 @@ export class GameController {
     const games = await this.gameService.FindAll();
     return res.status(200).json(games);
   }
+
+  @Get("enabled-games")
+  async getEnabledGames() {
+    return this.gameService.getEnabledGames();
+  }
 }

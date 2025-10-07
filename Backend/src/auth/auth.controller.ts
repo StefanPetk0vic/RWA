@@ -12,20 +12,16 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UserService } from 'src/user/user.service';
-import { plainToInstance } from 'class-transformer';
 import { AuthGuard } from './guard/auth.guard';
 import { Request, Response } from 'express';
-import { JwtService } from '@nestjs/jwt';
-import { AuthJwtPayload } from './types/auth-jwtPayload';
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
-    private readonly jwtService: JwtService,
   ) {}
 
-  @Post('register') //Prvo ovo ide
+  @Post('register')
   async register(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
     try {
       const token = await this.authService.register(createUserDto);
@@ -58,12 +54,9 @@ export class AuthController {
       sameSite: 'lax', // or 'lax'
       maxAge: 1000 * 60 * 60 * 24, // 1 day in ms
     });
-    //New line
-
-    // Send the user info back
     return res
       .status(201)
-      .json({ message: 'User registered successfully', user: returnUser });
+      .json({ message: 'User registered successfully'});
   }
 
   //passthrough sluzi da ne moramo da saljemo .json .send nazad

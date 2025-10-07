@@ -10,7 +10,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 
-enum TransactionType {
+export enum TransactionType {
   GIFT = 'gift',
   BLACKJACK = 'BJ',
   SLOTMACHINE = 'SM',
