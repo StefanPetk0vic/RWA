@@ -12,10 +12,12 @@ import {
 
 export enum TransactionType {
   GIFT = 'gift',
-  BLACKJACK = 'BJ',
-  SLOTMACHINE = 'SM',
-  HORSERACE = 'HR',
+  BLACKJACK = 'blackjack',
+  SLOTMACHINE = 'slotmachine',
+  HORSERACE = 'horserace',
+  COINFLIP = 'coinflip',
 }
+
 
 @Entity()
 export class Transaction {

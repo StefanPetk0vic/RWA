@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Round } from './entities/round.entity';
 import { Game } from 'src/game/entities/game.entity';
-import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class RoundService {
@@ -26,15 +25,6 @@ export class RoundService {
     return this.roundRepo.save(round);
   }
 
-  async finishRound(roundId: number, result: string) {
-    const round = await this.roundRepo.findOne({ where: { id: roundId } });
-    if (!round) throw new NotFoundException('Round not found');
-
-    round.result = result;
-    round.status = 'finished';
-    return this.roundRepo.save(round);
-  }
-
   async getUserRounds(userId: number) {
     return this.roundRepo
       .createQueryBuilder('round')
@@ -42,5 +32,19 @@ export class RoundService {
       .leftJoinAndSelect('round.game', 'game')
       .where('bet.user.id = :userId', { userId })
       .getMany();
+  }
+
+  async findOne(roundId: number){
+    return this.roundRepo.findOne({where:{id:roundId}});
+  }
+
+  //Useless now
+  async finishRound(roundId: number, result: string) {
+    const round = await this.roundRepo.findOne({ where: { id: roundId } });
+    if (!round) throw new NotFoundException('Round not found');
+
+    round.result = result;
+    round.status = 'finished';
+    return this.roundRepo.save(round);
   }
 }

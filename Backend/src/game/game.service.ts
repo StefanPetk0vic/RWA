@@ -15,4 +15,5 @@ export class GameService {
   async getEnabledGames(): Promise<Game[]> {
     return this.gameRepository.find({ where: { enabled: true } });
   }
+  
 }

@@ -17,14 +17,6 @@ export class BetController {
     const userId = req.user.sub;
     return this.betService.placeBet(userId, body.roundId, body.amount, body.prediction);
   }
-  @UseGuards(AuthGuard)
-  @Patch(':id/settle')
-  async settleBet(
-    @Param('id') id: number,
-    @Body() body: { status: BetType; payout?: number },
-  ) {
-    return this.betService.settleBet(id, body.status, body.payout ?? 0);
-  }
   
   @UseGuards(AuthGuard)
   @Patch(':id/refund')

@@ -49,6 +49,9 @@ export class BetService {
             case 'horserace':
                 type = TransactionType.HORSERACE;
                 break;
+            case 'coinflip':
+                type = TransactionType.COINFLIP;
+                break;
             default:
                 type = TransactionType.GIFT; // fallback or misc
         }
@@ -73,25 +76,16 @@ export class BetService {
     }
 
 
-    async settleBet(id: number, status: BetType, payout: number) {
-        const bet = await this.betRepo.findOne({ where: { id }, relations: ['user'] });
-        if (!bet) throw new NotFoundException('Bet not found');
-
-        bet.status = status;
-        bet.payout = payout;
-
-        if (status === BetType.WON || status === BetType.REFUNDED) {
-            bet.user.Credit += payout;
-            await this.userRepo.save(bet.user);
-        }
-
-        return this.betRepo.save(bet);
-    }
     async refundBet(id: number) {
         const bet = await this.betRepo.findOne({ where: { id } });
         if (!bet) throw new NotFoundException('Bet not found');
-        return this.settleBet(id, BetType.REFUNDED, bet.amount);
+
+        return this.updateBet(id, {
+            status: BetType.REFUNDED,
+            payout: bet.amount,
+        });
     }
+
 
     async getRoundBets(roundId: number) {
         return this.betRepo.find({
@@ -99,4 +93,18 @@ export class BetService {
             relations: ['user'],
         });
     }
+
+    async updateBet(id: number, data: Partial<Bet>) {
+        const bet = await this.betRepo.findOne({ where: { id }, relations: ['user'] });
+        if (!bet) throw new NotFoundException('Bet not found');
+
+        Object.assign(bet, data);
+        if (data.payout && (data.status === 'won' || data.status === 'refunded')) {
+            bet.user.Credit += data.payout;
+            await this.userRepo.save(bet.user);
+        }
+
+        return this.betRepo.save(bet);
+    }
+
 }

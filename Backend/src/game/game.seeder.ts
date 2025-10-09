@@ -5,15 +5,21 @@ import { Game } from './entities/game.entity';
 
 @Injectable()
 export class GameSeeder {
-  constructor(@InjectRepository(Game) private gameRepo: Repository<Game>) {}
+  constructor(@InjectRepository(Game) private gameRepo: Repository<Game>) { }
   async seed() {
     const games = [
-      { name: 'Poker', enabled: false, developer: false },
-      { name: 'Blackjack', enabled: false, developer: false },
-      { name: 'Roulette', enabled: false, developer: false },
-      { name: 'PokerDev', enabled: true, developer: true },
-      { name: 'BlackjackDev', enabled: true, developer: true },
-      { name: 'RouletteDev', enabled: true, developer: true },
+      { name: 'poker', enabled: false, developer: false },
+      { name: 'blackjack', enabled: false, developer: false },
+      { name: 'MineField', enabled: false, developer: false },
+      { name: 'CoinFlip', enabled: false, developer: false },
+      { name: 'HorseRace', enabled: false, developer: false },
+
+      { name: 'pokerDev', enabled: false, developer: true },
+      { name: 'blackjackDev', enabled: true, developer: true },
+      { name: 'minefieldDev', enabled: true, developer: true },
+      { name: 'coinflipDev', enabled: true, developer: true },
+      { name: 'horseraceDev', enabled: true, developer: true },
+
     ];
     for (const g of games) {
       const exists = await this.gameRepo.findOne({ where: { name: g.name } });
