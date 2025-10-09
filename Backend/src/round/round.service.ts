@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Round } from './entities/round.entity';
@@ -16,6 +16,7 @@ export class RoundService {
   async startRound(gameId: number, userId: number) {
     const game = await this.gameRepo.findOne({ where: { id: gameId } });
     if (!game) throw new NotFoundException('Game not found');
+    if(!game.enabled) throw new BadRequestException('Game is currently down')
 
     const round = this.roundRepo.create({
       game,

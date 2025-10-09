@@ -9,8 +9,9 @@ import {
 import { Transaction } from 'src/transaction/entities/transaction.entity';
 import { Bet } from 'src/bet/entities/bet.entity';
 
-enum UserRole {
+export enum UserRole {
   ADMIN = 'admin',
+  DEVELOPER='developer',
   USER = 'user',
 }
 

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import {forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Transaction } from './entities/transaction.entity';
 import { TransactionService } from './transaction.service';
@@ -12,7 +12,7 @@ import { AuthModule } from 'src/auth/auth.module';
     TypeOrmModule.forFeature([Transaction]),
     AuthModule,
     UserModule,
-    RoundModule,
+    forwardRef(() =>RoundModule),
   ],
   controllers: [TransactionController],
   providers: [TransactionService],

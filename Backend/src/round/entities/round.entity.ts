@@ -31,7 +31,7 @@ export class Round {
   @OneToMany(() => Transaction, (transaction) => transaction.round)
   transactions: Transaction[];
 
-  @ManyToOne(() => Game, (game) => game.rounds)
+  @ManyToOne(() => Game, (game) => game.rounds,{ eager: true })
   game: Game;
 
   @OneToMany(() => Bet, (bet) => bet.round)

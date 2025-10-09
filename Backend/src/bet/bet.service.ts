@@ -23,12 +23,15 @@ export class BetService {
         const user = await this.userRepo.findOne({ where: { id: userId } });
         if (!user) throw new BadRequestException('User not found');
         if (user.Credit < amount) throw new BadRequestException('Insufficient Credit');
-
         const round = await this.roundRepo.findOne({
             where: { id: roundId },
             relations: ['game'],
         });
         if (!round) throw new BadRequestException('Round not found');
+
+        if (round.status === 'finished') {
+            throw new BadRequestException('Cannot place a bet on a finished round');
+        }
 
         // Deduct credits
         user.Credit -= amount;
@@ -40,20 +43,26 @@ export class BetService {
 
         switch (gameName) {
             case 'blackjack':
+            case 'blackjackdev':
                 type = TransactionType.BLACKJACK;
                 break;
             case 'slotmachine':
+            case 'slotmachinedev':
             case 'slots':
                 type = TransactionType.SLOTMACHINE;
                 break;
             case 'horserace':
+            case 'horseracedev':
                 type = TransactionType.HORSERACE;
                 break;
             case 'coinflip':
+            case 'coinflipdev':
                 type = TransactionType.COINFLIP;
                 break;
-            default:
+            case 'gift':
                 type = TransactionType.GIFT; // fallback or misc
+            default:
+                throw new BadRequestException('Game of this type doesnt exist')
         }
 
         await this.transactionService.createTransaction(

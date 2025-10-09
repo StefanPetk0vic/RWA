@@ -42,7 +42,7 @@ export class AuthService implements OnModuleInit {
     };
     const newUser = await this.userService.create(newUserDto);
     console.log('User created:', newUser);
-    const payload: AuthJwtPayload = { sub: newUser.id, email: newUser.email };
+    const payload: AuthJwtPayload = { sub: newUser.id, email: newUser.email, permissions:newUser.permissions};
     return this.jwtService.sign(payload);
   }
 
@@ -65,6 +65,7 @@ export class AuthService implements OnModuleInit {
       const payload: AuthJwtPayload = {
         sub: existingUser.id,
         email: existingUser.email,
+        permissions:existingUser.permissions
       };
       return this.jwtService.sign(payload);
     } else {

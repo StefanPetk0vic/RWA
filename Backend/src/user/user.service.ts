@@ -15,7 +15,7 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private jwtService: JwtService,
-  ) {}
+  ) { }
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = this.userRepository.create(createUserDto);
     console.log('User.service.ts entity before save:', user);
@@ -34,42 +34,29 @@ export class UserService {
     return this.userRepository.findOne({ where: { username } });
   }
 
-  async updateUser(dto: UpdateUserDto, token: string) {
-    const decodedJwtAccessToken: AuthJwtPayload = this.jwtService.decode(token);
-
-    const user = await this.findUserById(decodedJwtAccessToken.sub);
+  async updateUser(userId: number, dto: UpdateUserDto) {
+    const user = await this.findUserById(userId);
     if (!user) throw new NotFoundException('User not found!');
-
     Object.assign(user, dto);
     return this.userRepository.save(user);
   }
 
-  async getBalance(token: string) {
-    const decoded = await this.jwtService.verifyAsync<AuthJwtPayload>(token);
-    const userId = decoded.sub;
+
+  async getBalance(userId: number) {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found!');
-    return user.Credit;
+    return { balance: user.Credit };
   }
 
-  async getUserTransactions(token: string) {
-    const decoded = await this.jwtService.verifyAsync<AuthJwtPayload>(token);
-    const userId = decoded.sub;
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      relations: ['transactions'],
-    });
-    return user?.transactions ?? [];
-  }
-  async getUserBets(token: string) {
-    const decoded = await this.jwtService.verifyAsync<AuthJwtPayload>(token);
-    const userId = decoded.sub;
+
+  async getUserBets(userId: number) {
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: ['bets'],
     });
     return user?.bets ?? [];
   }
+
 
   async GetUser(email: string): Promise<ReturnUserDto | null>;
   async GetUser(id: number): Promise<ReturnUserDto | null>;
@@ -99,5 +86,5 @@ export class UserService {
 
   //Update preko JWT i updateUser.dto i plus ako radimo email verifikaciju
   //mora da klikne link
-  updateEmail(JWT: AuthJwtPayload, newEmail: string) {}
+  updateEmail(JWT: AuthJwtPayload, newEmail: string) { }
 }

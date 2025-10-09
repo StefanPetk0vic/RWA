@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef,Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Bet } from './entities/bet.entity';
 import { BetService } from './bet.service';
@@ -14,7 +14,7 @@ import { AuthModule } from 'src/auth/auth.module';
   imports: [
     TypeOrmModule.forFeature([Bet,Round,User]),
     UserModule,
-    RoundModule,
+    forwardRef(() => RoundModule),
     AuthModule,
     TransactionModule,
   ],

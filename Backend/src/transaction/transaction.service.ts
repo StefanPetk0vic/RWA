@@ -32,17 +32,20 @@ export class TransactionService {
   }
 
   async createBetTransaction(user: User, round: Round, credits: number) {
-    const type = this.getTransactionTypeFromGame(round.game.name);
+    const type = await this.getTransactionTypeFromGame(round.game.name);
     return this.createTransaction(user, round, credits, type);
   }
 
-  private getTransactionTypeFromGame(gameName: string): TransactionType {
+  async getTransactionTypeFromGame(gameName: string): Promise<TransactionType> {
     switch (gameName.toLowerCase()) {
-      case 'blackjack': return TransactionType.BLACKJACK;
-      case 'gift': return TransactionType.GIFT;
+      //case 'blackjack': return TransactionType.BLACKJACK;
+      case 'coinflipdev': case 'coinflip': return TransactionType.COINFLIP;
+      case 'slotmachinedev':
       case 'slotmachine':
       case 'slots': return TransactionType.SLOTMACHINE;
+      case 'horseracedev':
       case 'horserace': return TransactionType.HORSERACE;
+      case 'gift': return TransactionType.GIFT;
       default: throw new Error(`Unknown game type: ${gameName}`);
     }
   }

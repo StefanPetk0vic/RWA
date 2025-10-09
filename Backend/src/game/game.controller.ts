@@ -1,31 +1,61 @@
 import {
   BadRequestException,
+  Body,
   Controller,
+  Delete,
   Get,
+  Param,
+  Patch,
+  Post,
   Req,
-  Res,
   UseGuards,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { GameService } from './game.service';
+import { UserRole } from 'src/user/entities/user.entity';
 
+@UseGuards(AuthGuard)
 @Controller('game')
 export class GameController {
-  constructor(private readonly gameService: GameService) {}
+  constructor(private readonly gameService: GameService) { }
 
   @Get()
-  async getGames(@Req() req: Request, @Res() res: Response) {
-    const token = req.cookies.jwt;
-    if (!token) {
-      throw new BadRequestException('no token sent!');
-    }
-    const games = await this.gameService.FindAll();
-    return res.status(200).json(games);
+  async getGames(@Req() req: Request) {
+    const user = req.user;
+    return this.gameService.FindAll(user.permissions);
   }
 
   @Get("enabled-games")
-  async getEnabledGames() {
-    return this.gameService.getEnabledGames();
+  async getEnabledGames(@Req() req: Request) {
+    const user = req.user;
+    return this.gameService.getEnabledGames(user.permissions);
   }
+
+  // Admin-only: create a new game
+  @Post('admin/add')
+  async addGame(@Req() req: Request, @Body() body: { name: string; developer?: boolean }) {
+    const user = req.user;
+    if (user.permissions !== UserRole.ADMIN) {
+      throw new BadRequestException('Only admins can add new games');
+    }
+    return this.gameService.addGame(body.name.toLowerCase(), !!body.developer);
+  }
+
+  // Admin-only: remove a game
+  @Delete('admin/remove/:id')
+  async removeGame(@Req() req: Request, @Param('id') id: number) {
+    const user = req.user;
+    if (user.permissions !== UserRole.ADMIN) {
+      throw new BadRequestException('Only admins can remove games');
+    }
+    return this.gameService.removeGame(id);
+  }
+
+  // Admin + Developer: enable/disable a game
+  @Patch('toggle/:id')
+  async toggleGame(@Param('id') id: number) {
+    return this.gameService.toggleGameState(id);
+  }
+
 }

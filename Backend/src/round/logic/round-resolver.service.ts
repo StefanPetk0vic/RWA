@@ -1,13 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Round } from 'src/round/entities/round.entity';
-import { CoinFlipService } from '../../game/logic/coinflip.service';
+import { CoinFlipService } from '../../game/logic/coin-flip.service';
 import { BetService } from 'src/bet/bet.service';
 import { TransactionService } from 'src/transaction/transaction.service';
 import { Bet } from 'src/bet/entities/bet.entity';
 import { TransactionType } from 'src/transaction/entities/transaction.entity';
-import { SlotMachineService } from '../../game/logic/slotMachine.service';
+import { SlotMachineService } from '../../game/logic/slot-machine.service';
 //import { BlackjackService } from './blackjack.service';
-import { HorseRaceService } from '../../game/logic/horserace.service';
+import { HorseRaceService } from '../../game/logic/horse-race.service';
+import { RoundService } from '../round.service';
 
 @Injectable()
 export class RoundResolver {
@@ -18,9 +19,15 @@ export class RoundResolver {
         //private readonly blackjackService: BlackjackService,
         private readonly betService: BetService,
         private readonly txService: TransactionService,
+        private readonly roundService: RoundService,
+
     ) { }
 
     async resolveRound(round: Round) {
+
+        if (round.status === 'finished') {
+            throw new BadRequestException(`Round ${round.id} has already been resolved`);
+        }
 
         const gameName = round.game.name.toLowerCase();
 
@@ -28,12 +35,16 @@ export class RoundResolver {
 
         switch (gameName) {
             case 'coinflip':
+            case 'coinflipdev':
                 result = await this.coinFlipService.flipCoin();
                 break;
             case 'slotmachine':
+            case 'slotmachinedev':
                 result = await this.slotMachineService.spin();
                 break;
             case 'horserace':
+            case 'horseracedev':
+
                 result = await this.horseRaceService.winningHorse();
                 break;
 
@@ -52,12 +63,10 @@ export class RoundResolver {
                 throw new Error(`Game logic not implemented for ${gameName}`);
         }
 
-
-        round.status = 'finished';
         round.result = result;
 
         const bets = await this.betService.getRoundBets(round.id);
-        let payout:number = 0;
+        let payout: number = 0;
 
         const resolvedBets: Bet[] = [];
 
@@ -66,6 +75,8 @@ export class RoundResolver {
 
             switch (gameName) {
                 case 'coinflip':
+                case 'coinflipdev':
+
                     payout = this.coinFlipService.calculatePayout(
                         bet.prediction,
                         result as 'heads' | 'tails',
@@ -73,13 +84,14 @@ export class RoundResolver {
                     );
                     break;
                 case 'slotmachine':
+                case 'slotmachinedev':
                     payout = this.slotMachineService.calculatePayout(
-                        bet.prediction,
                         result,
                         bet.amount,
                     );
                     break;
                 case 'horserace':
+                case 'horseracedev':
                     payout = this.horseRaceService.calculatePayout(
                         bet.prediction,
                         result,
@@ -104,30 +116,19 @@ export class RoundResolver {
                     bet.user,
                     round,
                     payout,
-                    this.getTransactionTypeFromGame(gameName),
+                    await this.txService.getTransactionTypeFromGame(gameName),
                 );
             }
 
             resolvedBets.push(bet);
         }
 
+        await this.roundService.finishRound(round.id, result);
 
         return {
             result,
             bets: resolvedBets,
-            payout
+            payout,
         };
-    }
-
-    private getTransactionTypeFromGame(gameName: string): TransactionType {
-        switch (gameName.toLowerCase()) {
-            case 'coinflip': return TransactionType.COINFLIP;
-            case 'blackjack': return TransactionType.BLACKJACK;
-            case 'slotmachine':
-            case 'slots': return TransactionType.SLOTMACHINE;
-            case 'gift': return TransactionType.GIFT;
-            default:
-                throw new Error(`Unknown game type: ${gameName}`);
-        }
     }
 }

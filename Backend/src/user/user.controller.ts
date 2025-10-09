@@ -7,6 +7,7 @@ import {
   BadRequestException,
   Req,
   Res,
+  Body,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -14,9 +15,9 @@ import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { plainToInstance } from 'class-transformer';
 import { Request, Response } from 'express';
 
-@Controller('users')
+@Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Get('by-email')
   async findByEmail(@Query('email') email: string) {
@@ -41,44 +42,28 @@ export class UserController {
 
   @UseGuards(AuthGuard)
   @Patch('me')
-  async updateProfile(@Req() req: Request, @Res() res: Response) {
-    const data = plainToInstance(UpdateUserDto, req.body);
-    if (!data) {
-      throw new BadRequestException('no data sent!');
-    }
-    const token = req.cookies.jwt;
-    if (!token) {
-      throw new BadRequestException('no token sent!');
-    }
-    await this.userService.updateUser(data, token);
-    return res.status(200).json({ message: 'User updated successfully' });
+  @Patch('me')
+  async updateProfile(@Req() req: any, @Body() dto: UpdateUserDto) {
+    return this.userService.updateUser(req.user.sub, dto);
   }
+
 
   @UseGuards(AuthGuard)
   @Get('me/balance')
-  async getBalance(@Req() req: Request) {
-    const token = req.cookies.jwt;
-    if (!token) throw new BadRequestException('No token sent!');
-    return await this.userService.getBalance(token);
+  async getBalance(@Req() req: any) {
+    return this.userService.getBalance(req.user.sub);
   }
+
+
 
   //Get all bets of logged-in user
   @UseGuards(AuthGuard)
   @Get('me/bets')
-  async getMyBets(@Req() req: Request) {
-    const token = req.cookies.jwt;
-    if (!token) throw new BadRequestException('No token sent!');
-    return this.userService.getUserBets(token);
+  async getMyBets(@Req() req: any) {
+    const userId = req.user.sub; // number
+    return this.userService.getUserBets(userId);
   }
 
-  //Get transaction history
-  @UseGuards(AuthGuard)
-  @Get('me/transactions')
-  async getMyTransactions(@Req() req: Request) {
-    const token = req.cookies.jwt;
-    if (!token) throw new BadRequestException('No token sent!');
-    return this.userService.getUserTransactions(token);
-  }
 
   @Get()
   Test(@Req() request: Request) {

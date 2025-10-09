@@ -9,6 +9,8 @@ export class ReturnUserDto {
   @Expose()
   username: string;
   @Expose()
+  permissions: string;
+  @Expose()
   email: string;
   @Expose()
   credits: string;

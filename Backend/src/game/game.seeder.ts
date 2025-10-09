@@ -8,15 +8,15 @@ export class GameSeeder {
   constructor(@InjectRepository(Game) private gameRepo: Repository<Game>) { }
   async seed() {
     const games = [
-      { name: 'poker', enabled: false, developer: false },
-      { name: 'blackjack', enabled: false, developer: false },
-      { name: 'MineField', enabled: false, developer: false },
-      { name: 'CoinFlip', enabled: false, developer: false },
-      { name: 'HorseRace', enabled: false, developer: false },
+      //{ name: 'poker', enabled: false, developer: false },
+      //{ name: 'blackjack', enabled: false, developer: false },
+      { name: 'slotmachine', enabled: false, developer: false },
+      { name: 'coinflip', enabled: false, developer: false },
+      { name: 'horserace', enabled: false, developer: false },
 
-      { name: 'pokerDev', enabled: false, developer: true },
-      { name: 'blackjackDev', enabled: true, developer: true },
-      { name: 'minefieldDev', enabled: true, developer: true },
+      //{ name: 'pokerDev', enabled: false, developer: true },
+      //{ name: 'blackjackDev', enabled: true, developer: true },
+      { name: 'slotmachineDev', enabled: true, developer: true },
       { name: 'coinflipDev', enabled: true, developer: true },
       { name: 'horseraceDev', enabled: true, developer: true },
 
