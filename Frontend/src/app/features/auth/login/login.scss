@@ -30,7 +30,7 @@
     @apply flex flex-col gap-1;
   }
   &-title {
-    @apply text-4xl text-primary font-bold;
+    @apply text-4xl text-base-content font-bold;
   }
   &-subtitle {
     @apply text-base font-medium text-primary;

@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import {
   FormsModule,
   ReactiveFormsModule,
@@ -11,6 +11,8 @@ import {
 import { Text } from '../../../shared/components/input/text/text';
 import { Password } from '../../../shared/components/input/password/password';
 import { Captcha } from '../../../shared/components/captcha/captcha';
+import { ValidationService } from '../../../shared/validations/validation.service';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -25,16 +27,19 @@ import { Captcha } from '../../../shared/components/captcha/captcha';
     Captcha,
   ],
   templateUrl: './login.html',
-  styleUrl: './login.scss',
+  styleUrls: ['./login.scss'],
 })
 export class Login {
   submitted = false;
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder
+    , private validationService: ValidationService, private router: Router, private authService:AuthService
+  ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
+
     });
   }
 
@@ -48,35 +53,16 @@ export class Login {
     return this.loginForm.get('password');
   }
 
-  // TODO: make this as a service so there's no big chunck of code like this
-  getEmailErrorMessage(): string {
-    const emailControl = this.email;
-    if (
-      emailControl &&
-      (emailControl?.touched || emailControl?.dirty || this.submitted == true)
-    ) {
-      if (emailControl.hasError('required')) {
-        return 'Email is required.';
-      }
-
-      if (emailControl.hasError('email')) {
-        return 'Please enter a valid email address.';
-      }
-    }
-    return '';
+  goToRegister() {
+    this.router.navigate(['/auth/register']);
   }
 
-  getPassErrorMessage(): string {
-    const passControl = this.password;
-    if (
-      passControl &&
-      (passControl?.touched || passControl?.dirty || this.submitted == true)
-    ) {
-      if (passControl.hasError('required')) {
-        return 'Password is required.';
-      }
-    }
-    return '';
+  getEmailErrorMessage(controlName: string): string {
+    return this.validationService.getEmailErrorMessage(this.loginForm, controlName, this.submitted);
+  }
+
+  getPassErrorMessage(controlName: string): string {
+    return this.validationService.getPasswordErrorMessage(this.loginForm, controlName, this.submitted);
   }
 
   handleCaptchaVerification(isVerified: boolean) {
@@ -89,15 +75,23 @@ export class Login {
     }
   }
 
-  handleVerfitication() {
-    this.captchaComponent.verifyCaptcha();
-    this.getEmailErrorMessage();
-    this.getPassErrorMessage();
-  }
-
   onSubmit() {
     this.submitted = true;
-    this.handleVerfitication();
+    this.captchaComponent.verifyCaptcha();
+
+    if (this.loginForm.invalid) return;
+
+    const loginData = this.loginForm.value;
+
+    this.authService.login(loginData).subscribe({
+      next: () => {
+        this.router.navigate(['/home']); // redirect
+      },
+      error: (err) => {
+        console.error('Login failed', err);
+      },
+    });
   }
-  
+
+
 }

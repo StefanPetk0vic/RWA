@@ -1,1 +1,83 @@
-<p>register works!</p>
+<div class="flex flex-col md:flex-row w-screen h-screen font-display">
+  <div class="md:w-3/5 w-full bg-base-300 relative flex items-center justify-center">
+        <img
+            src="assets/images/casino.png"
+            alt="login-illustration"
+            class="image-illustration max-h-full max-w-full object-contain p-4"
+        />
+    </div>
+    <div class="md:w-2/5 w-full flex flex-col justify-center px-8 p-4 ">
+        <div class="heading-layout">
+            <h1 class="heading-title leading font-bold">Sign up here</h1>
+            <span class="subtitle ">
+                Already have an account ? You can
+                <span class="font-bold cursor-pointer text-info" (click)="goToLogin()">Login here !</span>
+            </span>
+        </div>
+        <form
+            [formGroup]="registerForm"
+            (ngSubmit)="onSubmit()"
+            class="flex flex-col gap-1 mt-4"
+        >
+            <global-input-text
+                formControlName="username"
+                label="Username"
+                placeholder="Input username here"
+                labelClass="w-full form-control custom-label-class"
+                inputClass="w-full cutom-input-class text-md"
+                type="text"
+                [required]="true"
+                icon="person"
+                [errorMessage]="getDataErrorMessage('username')"
+            ></global-input-text>
+            <global-input-text
+                formControlName="firstName"
+                label="First Name"
+                placeholder="Input First name here"
+                labelClass="w-full form-control custom-label-class"
+                inputClass="w-full cutom-input-class text-md"
+                type="text"
+                [required]="true"
+                icon="person"
+                [errorMessage]="getDataErrorMessage('firstName')"
+            ></global-input-text>
+            <global-input-text
+                formControlName="lastName"
+                label="Last Name"
+                placeholder="Input Last name here"
+                labelClass="w-full form-control custom-label-class"
+                inputClass="w-full cutom-input-class text-md"
+                type="text"
+                [required]="true"
+                icon="person"
+                [errorMessage]="getDataErrorMessage('lastName')"
+            ></global-input-text>
+            <global-input-text
+                formControlName="email"
+                label="Email"
+                placeholder="Input email here"
+                labelClass="w-full form-control custom-label-class"
+                inputClass="w-full cutom-input-class text-md"
+                type="email"
+                [required]="true"
+                icon="mail"
+                [errorMessage]="getEmailErrorMessage('email')"
+            ></global-input-text>
+            <global-input-password
+                formControlName="password"
+                label="Password"
+                placeholder="Input password "
+                labelClass="w-full form-control custom-label-class"
+                inputClass="w-full custom-input-class text-md"
+                type="password"
+                [required]="true"
+                icon="lock"
+                [errorMessage]="getPassErrorMessage('password')"
+            >
+            </global-input-password>
+            <button class="mt-4 btn **btn-primary rounded-full btn-accent btn-outline**" type="submit">
+          Register
+          </button>
+        </form>
+    </div>
+</div>

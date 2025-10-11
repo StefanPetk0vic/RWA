@@ -1,0 +1,38 @@
+@use "tailwindcss";
+
+@plugin "daisyui" {
+  themes: corporate --default, dark --prefersdark,;
+}
+
+
+.image {
+  &-layout {
+    @apply w-1/2 h-screen flex flex-col items-center justify-end py-[5%];
+  }
+
+  &-background {
+    @apply bg-blue-600;
+  }
+
+  &-illustration {
+    @apply object-fill w-3/4;
+  }
+}
+
+.form {
+  &-layout {
+    @apply w-1/2 h-screen flex flex-col gap-4 px-[6%] justify-center;
+  }
+}
+
+.heading {
+  &-layout {
+    @apply flex flex-col gap-1;
+  }
+  &-title {
+    @apply text-4xl text-base-content font-bold;
+  }
+  &-subtitle {
+    @apply text-base font-medium text-primary;
+  }
+}

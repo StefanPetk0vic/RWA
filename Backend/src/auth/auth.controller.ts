@@ -25,11 +25,13 @@ export class AuthController {
   async register(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
     try {
       const token = await this.authService.register(createUserDto);
+      const isProd = process.env.NODE_ENV === 'production';
+
       res.cookie('jwt', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict', // or 'lax'
-        maxAge: 1000 * 60 * 60 * 24, // 1 day in ms
+        secure: isProd, // true in production, false in dev
+        sameSite: isProd ? 'none' : 'lax', // 'none' for cross-site, 'lax' for same-origin dev
+        maxAge: 1000 * 60 * 60 * 24, // 1 day
       });
 
       return res.status(201).json({ message: 'User registered successfully' });
@@ -48,15 +50,15 @@ export class AuthController {
     if (!returnUser) {
       throw new BadRequestException('User not found');
     }
+    
+    const isProd = process.env.NODE_ENV === 'production';
     res.cookie('jwt', token, {
       httpOnly: true,
-      secure: false,
-      sameSite: 'lax', // or 'lax'
-      maxAge: 1000 * 60 * 60 * 24, // 1 day in ms
+      secure: isProd, // true in production, false in dev
+      sameSite: isProd ? 'none' : 'lax', // 'none' for cross-site, 'lax' for same-origin dev
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
     });
-    return res
-      .status(201)
-      .json({ message: 'User registered successfully'});
+    return res.status(201).json({ message: 'User registered successfully' });
   }
 
   //passthrough sluzi da ne moramo da saljemo .json .send nazad
@@ -68,9 +70,9 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('check')
+  @Get('check/me')
   isLoginIn(@Req() req) {
-    return { user: req.user };
+    return this.authService.CheckUser(req.user);
   }
 
   @UseGuards(AuthGuard)

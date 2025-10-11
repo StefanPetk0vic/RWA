@@ -9,13 +9,11 @@ export class ReturnUserDto {
   @Expose()
   username: string;
   @Expose()
-  permissions: string;
-  @Expose()
   email: string;
   @Expose()
-  credits: string;
+  Credit: string;
   @Expose()
-  freeSpins: string;
+  freeSpin: string;
 
   @Expose()
   transactions: Transaction;

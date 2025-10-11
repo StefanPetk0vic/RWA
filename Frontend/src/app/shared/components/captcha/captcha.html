@@ -37,11 +37,13 @@
         </button>
       </div>
     </label>
+    <div class="error-container h-5 mt-1">
     <span
       *ngIf="!!verificationMessage"
       class="flex items-start text-sm text-red-500"
     >
       {{ verificationMessage }}
     </span>
+    </div>
   </div>
 </div>

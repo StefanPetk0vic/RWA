@@ -26,7 +26,9 @@
       [ngClass]="inputClass"
     />
   </div>
+  <div class="error-container h-5 mt-1">
   <span *ngIf="!!errorMessage" class="mt-1 text-sm text-red-500">
     {{ errorMessage }}
   </span>
+  </div>
 </label>

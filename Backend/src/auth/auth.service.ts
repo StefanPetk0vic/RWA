@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   OnModuleInit,
   Req,
 } from '@nestjs/common';
@@ -11,6 +12,8 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { AuthJwtPayload } from './types/auth-jwtPayload';
 import { ConfigService } from '@nestjs/config';
+import { plainToInstance } from 'class-transformer';
+import { ReturnUserDto } from 'src/user/dto/return-user.dto';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -42,7 +45,11 @@ export class AuthService implements OnModuleInit {
     };
     const newUser = await this.userService.create(newUserDto);
     console.log('User created:', newUser);
-    const payload: AuthJwtPayload = { sub: newUser.id, email: newUser.email, permissions:newUser.permissions};
+    const payload: AuthJwtPayload = {
+      sub: newUser.id,
+      email: newUser.email,
+      permissions: newUser.permissions,
+    };
     return this.jwtService.sign(payload);
   }
 
@@ -65,12 +72,20 @@ export class AuthService implements OnModuleInit {
       const payload: AuthJwtPayload = {
         sub: existingUser.id,
         email: existingUser.email,
-        permissions:existingUser.permissions
+        permissions: existingUser.permissions,
       };
       return this.jwtService.sign(payload);
     } else {
       throw new BadRequestException('password is incorrect');
     }
+  }
+  async CheckUser(user: { sub: string; email: string; permission: string }) {
+    const foundUser = await this.userService.findUserById(parseInt(user.sub));
+    if (!foundUser)
+      throw new NotFoundException(`User with ID "${user.sub}" not found.`);
+    return plainToInstance(ReturnUserDto, foundUser, {
+      excludeExtraneousValues: true,
+    });
   }
 
   //#region TEST PODACI
