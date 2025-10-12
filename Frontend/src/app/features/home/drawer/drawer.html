@@ -1,0 +1,47 @@
+<div class="drawer">
+  <input id="my-drawer-1" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content">
+    <!-- Page content here -->
+    <label for="my-drawer-1" class="btn drawer-button btn-square btn-ghost">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        class="inline-block h-5 w-5 stroke-current"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        ></path>
+      </svg>
+    </label>
+  </div>
+  <div class="drawer-side">
+    <label for="my-drawer-1" aria-label="close sidebar" class="drawer-overlay"></label>
+    <ul class="menu bg-base-200 min-h-full w-80 p-4">
+      <p class="text-xl font-semibold">H I G H R O L L E R</p>
+      <p class="text-sm mt-2">Active games list:</p>
+      <li *ngFor="let game of games">
+        <a class="text-lg flex items-center gap-2">
+          <div class="relative w-3 h-3">
+            <div
+              class="absolute inset-0 rounded-full animate-ping opacity-75"
+              [class.bg-success]="game.enabled"
+              [class.bg-error]="!game.enabled"
+            ></div>
+
+            <div
+              class="absolute inset-0 rounded-full"
+              [class.bg-success]="game.enabled"
+              [class.bg-error]="!game.enabled"
+            ></div>
+          </div>
+          {{ game.name }}
+        </a>
+      </li>
+      <li *ngIf="!games.length" class="text-sm opacity-70 italic mt-2">No games available.</li>
+    </ul>
+  </div>
+</div>

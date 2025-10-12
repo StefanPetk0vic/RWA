@@ -1,19 +1,19 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { Navbar } from './navbar/navbar';
+import { Footer } from './footer/footer';
+import { selectUser } from '../user/user.selectors';
 import { Store } from '@ngrx/store';
-import { selectUser } from "../user/user.selectors";
+import { Info } from './info/info';
 
 @Component({
   selector: 'app-home',
-  standalone: true,
-  imports: [CommonModule], // 👈 this line fixes the async pipe error
-  template: `
-    <div *ngIf="user$ | async as user">
-      Welcome, {{ user.Credit }}
-    </div>
-  `,
+  imports: [CommonModule, RouterModule, Navbar, Footer, Info],
+  templateUrl: './home.html',
 })
 export class Home {
   private store = inject(Store);
   user$ = this.store.select(selectUser);
+  visible = true;
 }

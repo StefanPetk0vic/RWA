@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import {
@@ -12,38 +12,35 @@ import { Text } from '../../../shared/components/input/text/text';
 import { Password } from '../../../shared/components/input/password/password';
 import { Captcha } from '../../../shared/components/captcha/captcha';
 import { ValidationService } from '../../../shared/validations/validation.service';
-import { AuthService } from '../auth.service';
+import { AuthService, UserProfile } from '../auth.service';
+import { setUser } from '../../user/user.actions';
+import { Store } from '@ngrx/store';
+import { switchMap, catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    RouterModule,
-    Text,
-    Password,
-    Captcha,
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, Text, Password, Captcha],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
 })
 export class Login {
   submitted = false;
   loginForm: FormGroup;
+  private store = inject(Store);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private fb = inject(FormBuilder);
+  private validationService = inject(ValidationService);
 
-  constructor(private fb: FormBuilder
-    , private validationService: ValidationService, private router: Router, private authService:AuthService
-  ) {
+  @ViewChild(Captcha) captchaComponent!: Captcha;
+
+  constructor() {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
-
     });
   }
-
-  @ViewChild(Captcha) captchaComponent!: Captcha;
 
   get email() {
     return this.loginForm.get('email');
@@ -53,45 +50,57 @@ export class Login {
     return this.loginForm.get('password');
   }
 
-  goToRegister() {
-    this.router.navigate(['/auth/register']);
-  }
-
   getEmailErrorMessage(controlName: string): string {
     return this.validationService.getEmailErrorMessage(this.loginForm, controlName, this.submitted);
   }
 
   getPassErrorMessage(controlName: string): string {
-    return this.validationService.getPasswordErrorMessage(this.loginForm, controlName, this.submitted);
+    return this.validationService.getPasswordErrorMessage(
+      this.loginForm,
+      controlName,
+      this.submitted
+    );
+  }
+
+  goToRegister() {
+    this.router.navigate(['/auth/register']);
   }
 
   handleCaptchaVerification(isVerified: boolean) {
     if (isVerified) {
       console.log('CAPTCHA is verified!');
-      // Proceed with your form submission or other logic
     } else {
       console.log('CAPTCHA verification failed.');
-      // Show an error message or take appropriate action
     }
   }
 
+  goHome() {
+    this.router.navigate(['/home']);
+  }
+  
   onSubmit() {
     this.submitted = true;
     this.captchaComponent.verifyCaptcha();
 
+    if (!this.captchaComponent.verifyCaptcha()) return;
     if (this.loginForm.invalid) return;
 
     const loginData = this.loginForm.value;
 
-    this.authService.login(loginData).subscribe({
-      next: () => {
-        this.router.navigate(['/home']); // redirect
-      },
-      error: (err) => {
-        console.error('Login failed', err);
-      },
-    });
+    this.authService
+      .login(loginData)
+      .pipe(
+        switchMap(() => this.authService.getProfile()),
+        catchError((err) => {
+          console.error('Login or fetching profile failed', err);
+          return of(null);
+        })
+      )
+      .subscribe((user: UserProfile | null) => {
+        if (user) {
+          this.store.dispatch(setUser({ user }));
+          this.router.navigate(['/home']);
+        }
+      });
   }
-
-
 }

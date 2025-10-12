@@ -80,6 +80,11 @@ export class Register {
   private formatLabel(name: string): string {
     return name.charAt(0).toUpperCase() + name.slice(1).replace(/([A-Z])/g, ' $1');
   }
+
+  goHome()
+  {
+    this.router.navigate(['/home']);
+  }
   onSubmit() {
     this.submitted = true;
 

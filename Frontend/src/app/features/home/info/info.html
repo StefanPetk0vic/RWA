@@ -1,0 +1,29 @@
+<div *ngIf="visible" role="alert" class="alert flex items-center justify-between">
+  <div class="flex items-center gap-3">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      class="stroke-info h-6 w-6 shrink-0"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      ></path>
+    </svg>
+
+    <div *ngIf="user$ | async as user; else guest" class="text-2xl font-semibold">
+      Welcome back, {{ user.username }}!
+    </div>
+
+    <ng-template #guest>
+      <div class="text-2xl text-base">
+        New users gain up to <span class="font-bold animate-shine">5 free spins!</span>
+      </div>
+    </ng-template>
+  </div>
+
+  <button (click)="closeInfo()" class="btn btn-sm btn-ghost rounded-full">✕</button>
+</div>

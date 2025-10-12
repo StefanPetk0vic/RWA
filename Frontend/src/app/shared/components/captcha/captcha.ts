@@ -61,8 +61,7 @@ export class Captcha implements AfterViewInit {
 
   //#region GENERATE CAPTCHA
   generateCaptcha() {
-    const chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     this.captcha = '';
     for (let i = 0; i < 6; i++) {
       this.captcha += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -75,7 +74,6 @@ export class Captcha implements AfterViewInit {
     this.verificationMessage = '';
     this.captchaControl.setValue('');
   }
-
 
   drawCaptcha(): void {
     const canvas = this.captchaCanvas.nativeElement;
@@ -117,18 +115,22 @@ export class Captcha implements AfterViewInit {
     return color;
   }
   //#endregion
-  
+
   //#region VERIFY
-  verifyCaptcha() {
+  verifyCaptcha(): boolean {
     const isMatch = this.captchaControl.value === this.captcha;
-    this.captchaVerified.emit(isMatch); // Emit verification result
+    this.captchaVerified.emit(isMatch);
+
     if (isMatch) {
       this.verificationMessage = '';
     } else if (this.captchaControl.hasError('required')) {
       this.verificationMessage = 'CAPTCHA is required';
-    } else if (this.captchaControl.value !== this.captcha) {
+    } else {
       this.verificationMessage = 'CAPTCHA failed. Please try again.';
     }
+
+    return isMatch; // ✅ return the result
   }
+
   //#endregion
 }
