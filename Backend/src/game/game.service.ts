@@ -10,15 +10,16 @@ export class GameService {
     @InjectRepository(Game)
     private gameRepository: Repository<Game>,
   ) { }
-  async FindAll(userPermission: 'admin' | 'developer' | 'user') {
-    const games = await this.gameRepository.find();
+  async FindAll(userPermission: 'admin' | 'developer' | 'user' | 'guest') {
 
+    const games = await this.gameRepository.find();
+    
     return games.filter(game => {
       // Admin and developer can see all games
       if (userPermission === 'admin' || userPermission === 'developer') return true;
 
       // Regular users only see non-dev games
-      if (userPermission === 'user' && !game.developer) return true;
+      if ((userPermission === 'user' || userPermission === 'guest') && !game.developer) return true;
 
       return false;
     });

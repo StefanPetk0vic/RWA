@@ -15,26 +15,33 @@ import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { GameService } from './game.service';
 import { UserRole } from 'src/user/entities/user.entity';
 
-@UseGuards(AuthGuard)
 @Controller('game')
 export class GameController {
-  constructor(private readonly gameService: GameService) { }
+  constructor(private readonly gameService: GameService) {}
 
   @Get()
   async getGames(@Req() req: Request) {
     const user = req.user;
+    if (!user) {
+      return this.gameService.FindAll('guest');
+    }
     return this.gameService.FindAll(user.permissions);
   }
 
-  @Get("enabled-games")
+  @UseGuards(AuthGuard)
+  @Get('enabled-games')
   async getEnabledGames(@Req() req: Request) {
     const user = req.user;
     return this.gameService.getEnabledGames(user.permissions);
   }
 
   // Admin-only: create a new game
+  @UseGuards(AuthGuard)
   @Post('admin/add')
-  async addGame(@Req() req: Request, @Body() body: { name: string; developer?: boolean }) {
+  async addGame(
+    @Req() req: Request,
+    @Body() body: { name: string; developer?: boolean },
+  ) {
     const user = req.user;
     if (user.permissions !== UserRole.ADMIN) {
       throw new BadRequestException('Only admins can add new games');
@@ -43,6 +50,7 @@ export class GameController {
   }
 
   // Admin-only: remove a game
+  @UseGuards(AuthGuard)
   @Delete('admin/remove/:id')
   async removeGame(@Req() req: Request, @Param('id') id: number) {
     const user = req.user;
@@ -53,9 +61,9 @@ export class GameController {
   }
 
   // Admin + Developer: enable/disable a game
+  @UseGuards(AuthGuard)
   @Patch('toggle/:id')
   async toggleGame(@Param('id') id: number) {
     return this.gameService.toggleGameState(id);
   }
-
 }
