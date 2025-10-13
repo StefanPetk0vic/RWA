@@ -24,7 +24,7 @@ export class Avatar {
       next: () => {
         this.store.dispatch(clearUser());
 
-        localStorage.removeItem('theme');
+        sessionStorage.removeItem('theme');
 
         this.router.navigate(['/login']);
       },

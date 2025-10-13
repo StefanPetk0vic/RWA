@@ -1,13 +1,7 @@
 import { Component, Input, forwardRef } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
-import {
-  NG_VALUE_ACCESSOR,
-  ControlValueAccessor,
-  NG_VALIDATORS,
-  ReactiveFormsModule,
-  FormsModule,
-} from '@angular/forms';
+import { NG_VALUE_ACCESSOR, ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'global-input-password',

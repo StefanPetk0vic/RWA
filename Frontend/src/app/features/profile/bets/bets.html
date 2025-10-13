@@ -1,4 +1,13 @@
-<app-bet-filter (filterChange)="onFilterChange($event)"></app-bet-filter>
+<div class="flex items-center gap-10">
+  <span class="italic">Filter:</span>
+  <app-bet-filter (filterChange)="onFilterChange($event)"></app-bet-filter>
+  <span class="mr-4 text-xl">|</span>
+  <app-range-filter
+    [min]="minPayout"
+    [max]="maxPayout"
+    (rangeChange)="onRangeChange($event)"
+  ></app-range-filter>
+</div>
 <ul class="list bg-base-100 rounded-box shadow-md p-2">
   <li *ngFor="let bet of filteredBets$ | async" class="list-row items-start gap-4">
     <div>
@@ -7,6 +16,7 @@
         class="size-18 mr-16 rounded-box"
         [src]="'assets/images/' + getGameImage(bet.round.game.name) + '.png'"
         alt="{{ bet.round.game.name }} symbol"
+        [class.invert]="isDark$ | async"
       />
     </div>
 

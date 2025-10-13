@@ -27,7 +27,13 @@
         <span class="text-xl font-bold animate-shine">BIG</span
         ><span class="animate-loser"> or go home !</span>
       </p>
-      <button class="btn btn-primary btn-sm mb-2 mt-2">Play Now</button>
+      <button
+        class="btn btn-primary btn-sm mb-2 mt-2"
+        (click)="startCoinFlip()"
+        [disabled]="!isEnabled('coinflip')"
+      >
+        Play Now
+      </button>
       <div role="alert" class="alert alert-warning alert-outline">
         <span
           ><span class="text-lg font-bold">Warning:</span> All games involve gambling and are based
@@ -62,7 +68,13 @@
         Bet on your favorite horse and
         <span class="text-lg font-bold animate-shine"> WIN BIG !</span>
       </p>
-      <button class="btn btn-primary btn-sm mb-2 mt-2">Play Now</button>
+      <button
+        class="btn btn-primary btn-sm mb-2 mt-2"
+        (click)="startHorseRace()"
+        [disabled]="!isEnabled('horserace')"
+      >
+        Play Now
+      </button>
       <div role="alert" class="alert alert-warning alert-outline">
         <span
           ><span class="text-lg font-bold">Warning:</span> All games involve gambling and are based
@@ -96,7 +108,13 @@
       <p class="text-center text-sm mb-2">
         Spin the wheel and hit the <span class="text-lg font-bold animate-shine">JACKPOT !</span>
       </p>
-      <button class="btn btn-primary btn-sm mb-2 mt-2">Play Now</button>
+      <button
+        class="btn btn-primary btn-sm mb-2 mt-2"
+        (click)="startSlotMachine()"
+        [disabled]="!isEnabled('slotmachine')"
+      >
+        Play Now
+      </button>
       <div role="alert" class="alert alert-warning alert-outline">
         <span
           ><span class="text-lg font-bold">Warning:</span> All games involve gambling and are based

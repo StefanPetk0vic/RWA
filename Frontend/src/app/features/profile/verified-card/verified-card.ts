@@ -10,7 +10,7 @@ import { Component, HostListener, Input } from '@angular/core';
 export class VerifiedCard {
   @Input() glowIntensity = 1.5;
   @Input() rotationFactor = 25;
-  @Input() shadowColor = 'rgba(0,0,0,0.2)';
+  @Input() shadowColor = 'rgba(18, 18, 18, 0.1)';
 
   cardStyle: any = {};
   holographicGradient = this.generateGradient(45);

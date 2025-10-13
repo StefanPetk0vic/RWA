@@ -7,7 +7,6 @@ import { selectUser } from '../user/user.selectors';
 import { clearUser, setUser } from '../user/user.actions';
 import { VerifiedCard } from './verified-card/verified-card';
 import { Bets } from './bets/bets';
-import { BetFilter } from './bet-filter/bet-filter';
 
 @Component({
   selector: 'app-profile',
@@ -24,7 +23,7 @@ export class Profile {
   userData: UserProfile | null = null;
 
   ngOnInit() {
-    const storedUser = localStorage.getItem('user');
+    const storedUser = sessionStorage.getItem('user');
 
     if (storedUser) {
       this.userData = JSON.parse(storedUser);
@@ -32,13 +31,13 @@ export class Profile {
       this.authService.getProfile().subscribe({
         next: (user) => {
           this.userData = user;
-          localStorage.setItem('user', JSON.stringify(user));
+          sessionStorage.setItem('user', JSON.stringify(user));
           this.store.dispatch(setUser({ user }));
         },
         error: (err) => {
           console.error('Profile load failed:', err);
           if (err.status === 401) {
-            localStorage.removeItem('user');
+            sessionStorage.removeItem('user');
             this.store.dispatch(clearUser());
             this.router.navigate(['/auth/login']);
           }

@@ -14,18 +14,18 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(ROOT_EFFECTS_INIT),
       switchMap(() => {
-        const storedUser = localStorage.getItem('user');
+        const storedUser = sessionStorage.getItem('user');
         if (storedUser) {
           const user: UserProfile = JSON.parse(storedUser);
           return of(setUser({ user }));
         }
         return this.authService.getProfile().pipe(
           map((user) => {
-            localStorage.setItem('user', JSON.stringify(user));
+            sessionStorage.setItem('user', JSON.stringify(user));
             return setUser({ user });
           }),
           catchError(() => {
-            localStorage.removeItem('user');
+            sessionStorage.removeItem('user');
             return of(clearUser());
           })
         );

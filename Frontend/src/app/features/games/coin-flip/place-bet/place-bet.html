@@ -1,0 +1,39 @@
+<div class="w-full flex flex-col items-center gap-4 p-4">
+  <div class="flex items-center gap-4">
+    <h1 class="text-4xl font-bold text-center">Coin Flip</h1>
+    <img
+      src="assets/images/coinflip.png"
+      alt="coinflip"
+      class="w-18 h-18"
+      [class.invert]="isDark$ | async"
+    />
+  </div>
+  <span class="text-center text-lg max-w-xl">
+    This game isn’t rigged! It uses a true random system, giving you a
+    <span class="animate-shine">50/50</span> chance for heads or tails. Every flip is independent
+    and fair, making your winnings completely based on luck and strategy. Are you ready to test your
+    luck against the house?
+  </span>
+  <div
+    class="w-full max-w-xl bg-base-100 rounded-xl shadow-lg p-4 flex flex-col items-center gap-3"
+  >
+    <label class="text-lg font-semibold self-start italic">PLACE A BET:</label>
+
+    <div class="w-full flex items-center gap-3">
+      <input
+        type="number"
+        placeholder="Enter your bet"
+        class="input input-bordered flex-1 text-center text-2xl py-2 opacity-40"
+      />
+
+      <button
+        class="btn btn-success text-lg font-bold relative transform transition-all duration-150 hover:translate-y-1 hover:shadow-[0_2px_0_#065f46] shadow-[0_4px_0_#065f46] active:translate-y-1.5 active:shadow-[0_1px_0_#065f46] w-1/4"
+      >
+        <span class="relative z-10">BET</span>
+        <span
+          class="absolute inset-0 bg-gradient-to-b from-green-300/30 to-green-900/40 rounded-lg -z-10"
+        ></span>
+      </button>
+    </div>
+  </div>
+</div>

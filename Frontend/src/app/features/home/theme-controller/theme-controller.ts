@@ -9,7 +9,7 @@ export class ThemeController {
   theme: 'autumn-modified' | 'dracula-modified';
 
   constructor() {
-    const saved = localStorage.getItem('theme') as 'autumn-modified' | 'dracula-modified' | null;
+    const saved = sessionStorage.getItem('theme') as 'autumn-modified' | 'dracula-modified' | null;
     if (saved) {
       this.theme = saved;
       this.applyTheme();
@@ -22,7 +22,7 @@ export class ThemeController {
   toggleTheme() {
     this.theme = this.theme === 'autumn-modified' ? 'dracula-modified' : 'autumn-modified';
     this.applyTheme();
-    localStorage.setItem('theme', this.theme);
+    sessionStorage.setItem('theme', this.theme);
   }
 
   private applyTheme() {

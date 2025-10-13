@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { DrawerService, Game } from './drawer.service';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { GameService } from '../../../shared/services/game.service';
+import { Game } from '../../../shared/services/get-games.service';
 
 @Component({
   selector: 'app-drawer',
@@ -8,33 +9,14 @@ import { CommonModule } from '@angular/common';
   templateUrl: './drawer.html',
   styleUrl: './drawer.scss',
 })
-export class Drawer {
+export class Drawer implements OnInit {
   games: Game[] = [];
 
-  constructor(private drawerService: DrawerService) {}
+  constructor(private gameService: GameService) {}
 
   ngOnInit() {
-    const cached = localStorage.getItem('games');
-    if (cached) {
-      try {
-        this.games = JSON.parse(cached);
-      } catch {
-        localStorage.removeItem('games');
-      }
-    }
-
-    if (!this.games.length) {
-      this.fetchGames();
-    }
-  }
-
-  private fetchGames() {
-    this.drawerService.getAllGames('user').subscribe({
-      next: (games) => {
-        this.games = games;
-        localStorage.setItem('games', JSON.stringify(games));
-      },
-      error: (err) => console.error('Error loading games:', err),
+    this.gameService.games$.subscribe((games) => {
+      this.games = games;
     });
   }
 }

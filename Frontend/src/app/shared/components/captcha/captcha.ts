@@ -45,7 +45,7 @@ export class Captcha implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Check if the app is running in the browser (client-side)
+    // Check if the app is running in the browser
     if (isPlatformBrowser(this.platformId)) {
       this.drawCaptcha();
     }
