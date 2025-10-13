@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Bet } from './entities/bet.entity';
@@ -9,111 +13,119 @@ import { BetType } from './entities/bet.entity';
 import { TransactionType } from 'src/transaction/entities/transaction.entity';
 @Injectable()
 export class BetService {
-    constructor(
-        @InjectRepository(Bet)
-        private readonly betRepo: Repository<Bet>,
-        @InjectRepository(Round)
-        private readonly roundRepo: Repository<Round>,
-        @InjectRepository(User)
-        private readonly userRepo: Repository<User>,
-        private readonly transactionService: TransactionService,
-    ) { }
+  constructor(
+    @InjectRepository(Bet)
+    private readonly betRepo: Repository<Bet>,
+    @InjectRepository(Round)
+    private readonly roundRepo: Repository<Round>,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
+    private readonly transactionService: TransactionService,
+  ) {}
 
-    async placeBet(userId: number, roundId: number, amount: number, prediction: any) {
-        const user = await this.userRepo.findOne({ where: { id: userId } });
-        if (!user) throw new BadRequestException('User not found');
-        if (user.Credit < amount) throw new BadRequestException('Insufficient Credit');
-        const round = await this.roundRepo.findOne({
-            where: { id: roundId },
-            relations: ['game'],
-        });
-        if (!round) throw new BadRequestException('Round not found');
+  async placeBet(
+    userId: number,
+    roundId: number,
+    amount: number,
+    prediction: any,
+  ) {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    if (!user) throw new BadRequestException('User not found');
+    if (user.Credit < amount)
+      throw new BadRequestException('Insufficient Credit');
+    const round = await this.roundRepo.findOne({
+      where: { id: roundId },
+      relations: ['game'],
+    });
+    if (!round) throw new BadRequestException('Round not found');
 
-        if (round.status === 'finished') {
-            throw new BadRequestException('Cannot place a bet on a finished round');
-        }
-
-        // Deduct credits
-        user.Credit -= amount;
-        await this.userRepo.save(user);
-
-        // Create a transaction for the bet placement
-        const gameName = round.game.name.toLowerCase();
-        let type: TransactionType;
-
-        switch (gameName) {
-            case 'blackjack':
-            case 'blackjackdev':
-                type = TransactionType.BLACKJACK;
-                break;
-            case 'slotmachine':
-            case 'slotmachinedev':
-            case 'slots':
-                type = TransactionType.SLOTMACHINE;
-                break;
-            case 'horserace':
-            case 'horseracedev':
-                type = TransactionType.HORSERACE;
-                break;
-            case 'coinflip':
-            case 'coinflipdev':
-                type = TransactionType.COINFLIP;
-                break;
-            case 'gift':
-                type = TransactionType.GIFT; // fallback or misc
-            default:
-                throw new BadRequestException('Game of this type doesnt exist')
-        }
-
-        await this.transactionService.createTransaction(
-            user,
-            round,
-            -amount,
-            type,
-        );
-
-        const bet = this.betRepo.create({
-            user,
-            round,
-            amount,
-            prediction,
-            status: BetType.PENDING,
-            payout: 0,
-        });
-
-        return this.betRepo.save(bet);
+    if (round.status === 'finished') {
+      throw new BadRequestException('Cannot place a bet on a finished round');
     }
 
+    // Deduct credits
+    user.Credit -= amount;
+    await this.userRepo.save(user);
 
-    async refundBet(id: number) {
-        const bet = await this.betRepo.findOne({ where: { id } });
-        if (!bet) throw new NotFoundException('Bet not found');
+    // Create a transaction for the bet placement
+    const gameName = round.game.name.toLowerCase();
+    let type: TransactionType;
 
-        return this.updateBet(id, {
-            status: BetType.REFUNDED,
-            payout: bet.amount,
-        });
+    switch (gameName) {
+      case 'blackjack':
+      case 'blackjackdev':
+        type = TransactionType.BLACKJACK;
+        break;
+      case 'slotmachine':
+      case 'slotmachinedev':
+      case 'slots':
+        type = TransactionType.SLOTMACHINE;
+        break;
+      case 'horserace':
+      case 'horseracedev':
+        type = TransactionType.HORSERACE;
+        break;
+      case 'coinflip':
+      case 'coinflipdev':
+        type = TransactionType.COINFLIP;
+        break;
+      case 'gift':
+        type = TransactionType.GIFT; // fallback or misc
+      default:
+        throw new BadRequestException('Game of this type doesnt exist');
     }
 
+    await this.transactionService.createTransaction(user, round, -amount, type);
 
-    async getRoundBets(roundId: number) {
-        return this.betRepo.find({
-            where: { round: { id: roundId } },
-            relations: ['user'],
-        });
+    const bet = this.betRepo.create({
+      user,
+      round,
+      amount,
+      prediction,
+      status: BetType.PENDING,
+      payout: 0,
+    });
+
+    return this.betRepo.save(bet);
+  }
+
+  async refundBet(id: number) {
+    const bet = await this.betRepo.findOne({ where: { id } });
+    if (!bet) throw new NotFoundException('Bet not found');
+
+    return this.updateBet(id, {
+      status: BetType.REFUNDED,
+      payout: bet.amount,
+    });
+  }
+
+  async getRoundBets(roundId: number) {
+    return this.betRepo.find({
+      where: { round: { id: roundId } },
+      relations: ['user'],
+    });
+  }
+
+  async getAllBets(userId: number) {
+    return this.betRepo.find({
+      where: { user: { id: userId } },
+      relations: ['round'],
+    });
+  }
+
+  async updateBet(id: number, data: Partial<Bet>) {
+    const bet = await this.betRepo.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+    if (!bet) throw new NotFoundException('Bet not found');
+
+    Object.assign(bet, data);
+    if (data.payout && (data.status === 'won' || data.status === 'refunded')) {
+      bet.user.Credit += data.payout;
+      await this.userRepo.save(bet.user);
     }
 
-    async updateBet(id: number, data: Partial<Bet>) {
-        const bet = await this.betRepo.findOne({ where: { id }, relations: ['user'] });
-        if (!bet) throw new NotFoundException('Bet not found');
-
-        Object.assign(bet, data);
-        if (data.payout && (data.status === 'won' || data.status === 'refunded')) {
-            bet.user.Credit += data.payout;
-            await this.userRepo.save(bet.user);
-        }
-
-        return this.betRepo.save(bet);
-    }
-
+    return this.betRepo.save(bet);
+  }
 }

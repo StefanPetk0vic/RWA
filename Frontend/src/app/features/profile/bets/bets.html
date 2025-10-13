@@ -1,0 +1,34 @@
+<app-bet-filter (filterChange)="onFilterChange($event)"></app-bet-filter>
+<ul class="list bg-base-100 rounded-box shadow-md p-2">
+  <li *ngFor="let bet of filteredBets$ | async" class="list-row items-start gap-4">
+    <div>
+      <span class="text-xl">{{ getGameImage(bet.round.game.name) }}</span>
+      <img
+        class="size-18 mr-16 rounded-box"
+        [src]="'assets/images/' + getGameImage(bet.round.game.name) + '.png'"
+        alt="{{ bet.round.game.name }} symbol"
+      />
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <div class="font-semibold text-xl">{{ CheckForDev(bet.round.game.name) }}</div>
+      <div *ngIf="bet.round.game.name !== 'slotmachine'" class="uppercase opacity-60">
+        Predicted: {{ bet.prediction }}
+      </div>
+      <div class="uppercase opacity-60">Result: {{ bet.round.result }}</div>
+    </div>
+
+    <div class="flex flex-col gap-1 ml-auto text-right">
+      <div class="text-sm">Bet: {{ bet.amount }}</div>
+      <div
+        class="text-sm font-bold"
+        [ngClass]="{
+          'text-green-500': bet.status === 'won',
+          'text-red-500': bet.status === 'lost'
+        }"
+      >
+        {{ bet.status | titlecase }} ({{ bet.payout }})
+      </div>
+    </div>
+  </li>
+</ul>

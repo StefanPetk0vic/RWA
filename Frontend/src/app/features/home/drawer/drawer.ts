@@ -9,11 +9,31 @@ import { CommonModule } from '@angular/common';
   styleUrl: './drawer.scss',
 })
 export class Drawer {
-  constructor(private drawerService: DrawerService) {}
   games: Game[] = [];
+
+  constructor(private drawerService: DrawerService) {}
+
   ngOnInit() {
+    const cached = localStorage.getItem('games');
+    if (cached) {
+      try {
+        this.games = JSON.parse(cached);
+      } catch {
+        localStorage.removeItem('games');
+      }
+    }
+
+    if (!this.games.length) {
+      this.fetchGames();
+    }
+  }
+
+  private fetchGames() {
     this.drawerService.getAllGames('user').subscribe({
-      next: (games) => (this.games = games),
+      next: (games) => {
+        this.games = games;
+        localStorage.setItem('games', JSON.stringify(games));
+      },
       error: (err) => console.error('Error loading games:', err),
     });
   }

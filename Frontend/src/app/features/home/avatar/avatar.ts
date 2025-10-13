@@ -33,4 +33,7 @@ export class Avatar {
       },
     });
   }
+  GoToProfile() {
+    this.router.navigate(['/home/profile']);
+  }
 }

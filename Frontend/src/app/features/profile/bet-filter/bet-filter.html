@@ -1,0 +1,24 @@
+<form class="filter mb-2">
+  <input class="btn btn-square btn-lg" type="reset" value="×" (click)="selectFilter(null)" />
+  <input
+    class="btn bg-base-300 btn-lg"
+    type="radio"
+    name="frameworks"
+    aria-label="won"
+    (click)="selectFilter('won')"
+  />
+  <input
+    class="btn bg-base-300 btn-lg"
+    type="radio"
+    name="frameworks"
+    aria-label="lost"
+    (click)="selectFilter('lost')"
+  />
+  <input
+    class="btn bg-base-300 btn-lg"
+    type="radio"
+    name="frameworks"
+    aria-label="pending"
+    (click)="selectFilter('pending')"
+  />
+</form>

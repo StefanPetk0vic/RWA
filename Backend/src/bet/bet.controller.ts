@@ -1,12 +1,20 @@
-import { Controller, Post, Body, UseGuards, Req, Patch, Param, Get } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Req,
+  Patch,
+  Param,
+  Get,
+} from '@nestjs/common';
 import { BetService } from './bet.service';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { BetType } from './entities/bet.entity';
 
-
 @Controller('bets')
 export class BetController {
-  constructor(private readonly betService: BetService) { }
+  constructor(private readonly betService: BetService) {}
 
   @UseGuards(AuthGuard)
   @Post()
@@ -15,9 +23,14 @@ export class BetController {
     @Req() req,
   ) {
     const userId = req.user.sub;
-    return this.betService.placeBet(userId, body.roundId, body.amount, body.prediction);
+    return this.betService.placeBet(
+      userId,
+      body.roundId,
+      body.amount,
+      body.prediction,
+    );
   }
-  
+
   @UseGuards(AuthGuard)
   @Patch(':id/refund')
   async refundBet(@Param('id') id: number) {
@@ -28,5 +41,10 @@ export class BetController {
   @Get('round/:roundId')
   async getBetsByRound(@Param('roundId') roundId: number) {
     return this.betService.getRoundBets(roundId);
+  }
+  @UseGuards(AuthGuard)
+  @Get('All-Bets')
+  async getAllBets(@Req() req) {
+    return this.betService.getAllBets(req.user.sub);
   }
 }

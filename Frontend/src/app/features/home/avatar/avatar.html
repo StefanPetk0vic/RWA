@@ -1,5 +1,4 @@
 <div class="dropdown dropdown-end">
-  <!-- ✅ if user is logged in -->
   <ng-container *ngIf="user$ | async as user; else guestMenu">
     <div
       tabindex="0"
@@ -23,7 +22,7 @@
       </li>
 
       <li>
-        <a><p class="text-lg">Profile</p></a>
+        <a class="text-lg cursor-pointer" (click)="GoToProfile()">Profile</a>
       </li>
       <li>
         <a class="text-lg cursor-pointer" (click)="logout()"> Logout </a>

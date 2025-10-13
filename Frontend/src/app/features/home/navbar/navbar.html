@@ -1,9 +1,9 @@
-<div class="navbar bg-base-100 shadow-sm">
+<div class="navbar bg-base-100 shadow-sm z-20">
   <div class="flex-none">
-    <app-drawer></app-drawer>
+    <app-drawer class="z-30"></app-drawer>
   </div>
   <div class="flex-1">
-    <a class="text-xl font-semibold">HighRoller</a>
+    <a class="btn btn-ghost text-xl font-semibold" (click)="BackToHome()">HighRoller</a>
   </div>
   <app-theme-controller class="mr-4"></app-theme-controller>
   <app-avatar></app-avatar>

@@ -1,0 +1,20 @@
+<div class="relative w-96 h-34 rounded-xl overflow-hidden cursor-pointer" [ngStyle]="cardStyle">
+  <div
+    class="absolute inset-0 rounded-xl pointer-events-none"
+    [ngStyle]="{ background: holographicGradient }"
+  ></div>
+  <div
+    class="absolute inset-0 rounded-xl pointer-events-none animate-shimmer"
+    [ngStyle]="{
+      background:
+        'linear-gradient(120deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.15) 100%)'
+    }"
+  ></div>
+
+  <div
+    class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4"
+  >
+    <h2 class="text-2xl font-bold mb-2">You are verified.</h2>
+    <p class="text-lg">Your membership card is valid.</p>
+  </div>
+</div>

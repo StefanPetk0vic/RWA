@@ -6,14 +6,21 @@ export interface UserState {
   user: UserProfile | null;
 }
 
+const storedUser = localStorage.getItem('user');
 export const initialState: UserState = {
-  user: null,
+  user: storedUser ? JSON.parse(storedUser) : null,
 };
 
-//handles how the state changes when actions fire
 export const userReducer = createReducer(
   initialState,
-  on(setUser, (state, { user }) => ({ ...state, user })),
-  on(clearUser, (state) => ({ ...state, user: null }))
-);
 
+  on(setUser, (state, { user }) => {
+    localStorage.setItem('user', JSON.stringify(user));
+    return { ...state, user };
+  }),
+
+  on(clearUser, (state) => {
+    localStorage.removeItem('user');
+    return { ...state, user: null };
+  })
+);
