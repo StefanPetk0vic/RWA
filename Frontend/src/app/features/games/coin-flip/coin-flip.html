@@ -1,24 +1,32 @@
-<div class="route-outline flex h-full gap-4 p-6 pb-18">
+<div
+  class="route-outline flex flex-col lg:flex-row gap-4 p-4 sm:p-6 overflow-y-auto h-[calc(100vh-6rem)]"
+>
   <div
-    class="flex-[0.6] bg-base-200 rounded-lg shadow-md flex flex-col items-center justify-start p-6 gap-6"
+    class="w-full lg:flex-[0.6] bg-base-200 rounded-lg shadow-md flex flex-col items-center justify-between p-4 sm:p-6 gap-6 min-h-[400px]"
   >
-    <app-place-bet
-      (betPlaced)="updateCoinResult($event)"
-      [resetTrigger]="resetTrigger"
-    ></app-place-bet>
-    <button
-      class="btn btn-warning text-lg font-bold relative transform transition-all duration-150 hover:translate-y-1 hover:shadow-[0_2px_0_#b45309] shadow-[0_4px_0_#92400e] active:translate-y-1.5 active:shadow-[0_1px_0_#78350f] w-1/4"
-      (click)="onPlayAgain()"
-    >
-      <span class="relative z-10">PLAY AGAIN</span>
-      <span
-        class="absolute inset-0 bg-gradient-to-b from-orange-300/30 to-orange-900/40 rounded-lg -z-10"
-      ></span>
-    </button>
+    <div class="w-full flex flex-col items-center">
+      <app-place-bet
+        (betPlaced)="updateCoinResult($event)"
+        [resetTrigger]="resetTrigger"
+        class="w-full"
+      >
+      </app-place-bet>
+      <div class="w-full flex justify-center mt-auto">
+        <button
+          class="btn btn-warning text-lg font-bold relative transform transition-all duration-150 hover:translate-y-1 hover:shadow-[0_2px_0_#b45309] shadow-[0_4px_0_#92400e] active:translate-y-1.5 active:shadow-[0_1px_0_#78350f] w-1/2 sm:w-1/3 lg:w-1/4"
+          (click)="onPlayAgain()"
+        >
+          <span class="relative z-10">PLAY AGAIN</span>
+          <span
+            class="absolute inset-0 bg-gradient-to-b from-orange-300/30 to-orange-900/40 rounded-lg -z-10"
+          ></span>
+        </button>
+      </div>
+    </div>
   </div>
   <div
-    class="flex-1 bg-base-200 rounded-lg shadow-md flex flex-col items-center justify-start w-full h-full"
+    class="w-full lg:flex-1 bg-base-200 rounded-lg shadow-md flex flex-col items-center justify-start p-4 sm:p-6 overflow-y-auto"
   >
-    <app-coin-result [coinResultData]="coinResultData"></app-coin-result>
+    <app-coin-result [coinResultData]="coinResultData" class="w-full h-full"></app-coin-result>
   </div>
 </div>
