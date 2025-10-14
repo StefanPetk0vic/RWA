@@ -14,7 +14,7 @@
       <span class="text-xl">{{ getGameImage(bet.round.game.name) }}</span>
       <img
         class="size-18 mr-16 rounded-box"
-        [src]="'assets/images/' + getGameImage(bet.round.game.name) + '.png'"
+        [src]="'assets/images/' + getGameImage(bet.round.game.name) + '.svg'"
         alt="{{ bet.round.game.name }} symbol"
         [class.invert]="isDark$ | async"
       />

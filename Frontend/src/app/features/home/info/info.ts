@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { selectUser } from '../../user/user.selectors';
 import { Observable } from 'rxjs';
-import { UserProfile } from '../../auth/auth.service';
+import { UserProfile } from '../../../shared/interfaces/user.interface';
 
 @Component({
   selector: 'app-info',

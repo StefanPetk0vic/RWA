@@ -12,10 +12,11 @@ import { Text } from '../../../shared/components/input/text/text';
 import { Password } from '../../../shared/components/input/password/password';
 import { Captcha } from '../../../shared/components/captcha/captcha';
 import { ValidationService } from '../../../shared/validations/validation.service';
-import { AuthService, UserProfile } from '../auth.service';
+import { AuthService } from '../auth.service';
 import { setUser } from '../../user/user.actions';
 import { Store } from '@ngrx/store';
 import { switchMap, catchError, of } from 'rxjs';
+import { UserProfile } from '../../../shared/interfaces/user.interface';
 
 @Component({
   selector: 'app-login',
@@ -77,7 +78,7 @@ export class Login {
   goHome() {
     this.router.navigate(['/home']);
   }
-  
+
   onSubmit() {
     this.submitted = true;
     this.captchaComponent.verifyCaptcha();

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { UserProfile } from '../../shared/interfaces/user.interface';
 
 export interface LoginDto {
   email: string;
@@ -15,22 +16,13 @@ export interface RegisterDto {
   firstName?: string;
   lastName?: string;
 }
-export interface UserProfile {
-  email: string;
-  username: string;
-  avatarUrl?: string;
-  firstName?: string;
-  lastName?: string;
-  Credit?: number;
-  freeSpin?: number;
-}
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private readonly API_URL = environment.KEY_TO_READ;
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
   login(data: LoginDto): Observable<void> {
     return this.http.post<void>(`${this.API_URL}/auth/login`, data, { withCredentials: true });
   }

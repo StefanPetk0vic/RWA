@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { AuthService, UserProfile } from '../auth/auth.service';
+import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 import { selectUser } from '../user/user.selectors';
 import { clearUser, setUser } from '../user/user.actions';
 import { VerifiedCard } from './verified-card/verified-card';
 import { Bets } from './bets/bets';
+import { UserProfile } from '../../shared/interfaces/user.interface';
 
 @Component({
   selector: 'app-profile',

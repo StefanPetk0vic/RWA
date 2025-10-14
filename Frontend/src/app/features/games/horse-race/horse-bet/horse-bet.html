@@ -1,0 +1,67 @@
+<div class="w-full flex flex-col items-center gap-4 p-4">
+  <!-- Header -->
+  <div class="flex items-center gap-4">
+    <h1 class="text-4xl font-bold text-center">Horse Race</h1>
+    <img
+      src="assets/images/horserace.svg"
+      alt="horserace"
+      class="w-18 h-18"
+      [class.invert]="isDark$ | async"
+    />
+  </div>
+
+  <!-- Description -->
+  <span class="text-center text-lg max-w-xl">
+    I wonder who's going to be the winner here? Did you bet on the right horse? Bet on your favorite
+    horse and see if they got what it takes!
+  </span>
+
+  <!-- Betting Card -->
+  <div
+    class="w-full max-w-xl bg-base-100 rounded-xl shadow-lg p-4 flex flex-col items-center gap-3"
+  >
+    <label class="text-lg font-semibold self-start italic">PLACE A BET:</label>
+
+    <!-- Bet input + button -->
+    <div class="w-full flex items-center gap-3">
+      <input
+        type="number"
+        placeholder="Enter your bet"
+        class="input input-bordered flex-1 text-center text-2xl py-2 opacity-40"
+        [(ngModel)]="betAmount"
+      />
+
+      <button
+        class="btn btn-success text-lg font-bold relative transform transition-all duration-150 hover:translate-y-1 hover:shadow-[0_2px_0_#065f46] shadow-[0_4px_0_#065f46] active:translate-y-1.5 active:shadow-[0_1px_0_#065f46] w-1/4"
+        (click)="placeBet()"
+      >
+        <span class="relative z-10">BET</span>
+        <span
+          class="absolute inset-0 bg-gradient-to-b from-green-300/30 to-green-900/40 rounded-lg -z-10"
+        ></span>
+      </button>
+    </div>
+
+    <!-- Prediction grid -->
+    <div class="w-full flex flex-col items-center gap-4 mt-6">
+      <label class="text-lg font-semibold text-center">MAKE A PREDICTION</label>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 w-full justify-items-center">
+        <div *ngFor="let horse of horses; let i = index" class="flex flex-col items-center gap-2">
+          <button
+            type="button"
+            (click)="selectPrediction(horse)"
+            [ngClass]="{
+              'border-success shadow-lg shadow-green-500/30': selectedPrediction === horse,
+              'border-transparent shadow-md shadow-base-300/50': selectedPrediction !== horse
+            }"
+            class="w-24 h-24 rounded-lg border-4 transition-all duration-300 hover:scale-105 focus:outline-none bg-base-200 flex items-center justify-center text-lg font-bold"
+          >
+            <span class="text-5xl">🐎</span>
+          </button>
+          <span class="text-sm font-semibold">No.{{ i + 1 }} {{ horse }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

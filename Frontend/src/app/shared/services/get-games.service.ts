@@ -3,14 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { shareReplay } from 'rxjs/operators';
-
-export interface Game {
-  id: number;
-  name: string;
-  developer?: string;
-  enabled?: boolean;
-  updatedAt?: Date;
-}
+import { Game } from '../interfaces/game.interface';
 
 @Injectable({ providedIn: 'root' })
 export class GetGames {

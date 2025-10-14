@@ -13,7 +13,6 @@ export const routes: Routes = [
   { path: 'auth', redirectTo: 'auth/login', pathMatch: 'full' },
   { path: 'auth/login', component: Login },
   { path: 'auth/register', component: Register },
-
   {
     path: 'home',
     component: Home,

@@ -2,9 +2,23 @@
   <div
     class="flex-[0.6] bg-base-200 rounded-lg shadow-md flex flex-col items-center justify-start p-6 gap-6"
   >
-    <app-place-bet></app-place-bet>
+    <app-place-bet
+      (betPlaced)="updateCoinResult($event)"
+      [resetTrigger]="resetTrigger"
+    ></app-place-bet>
+    <button
+      class="btn btn-warning text-lg font-bold relative transform transition-all duration-150 hover:translate-y-1 hover:shadow-[0_2px_0_#b45309] shadow-[0_4px_0_#92400e] active:translate-y-1.5 active:shadow-[0_1px_0_#78350f] w-1/4"
+      (click)="onPlayAgain()"
+    >
+      <span class="relative z-10">PLAY AGAIN</span>
+      <span
+        class="absolute inset-0 bg-gradient-to-b from-orange-300/30 to-orange-900/40 rounded-lg -z-10"
+      ></span>
+    </button>
   </div>
   <div
-    class="flex-[1.4] bg-base-200 rounded-lg shadow-md flex flex-col items-center justify-start"
-  ></div>
+    class="flex-1 bg-base-200 rounded-lg shadow-md flex flex-col items-center justify-start w-full h-full"
+  >
+    <app-coin-result [coinResultData]="coinResultData"></app-coin-result>
+  </div>
 </div>

@@ -9,20 +9,22 @@ export class ThemeController {
   theme: 'autumn-modified' | 'dracula-modified';
 
   constructor() {
-    const saved = sessionStorage.getItem('theme') as 'autumn-modified' | 'dracula-modified' | null;
+    const saved = localStorage.getItem('theme') as 'autumn-modified' | 'dracula-modified' | null;
     if (saved) {
       this.theme = saved;
-      this.applyTheme();
     } else {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       this.theme = prefersDark ? 'dracula-modified' : 'autumn-modified';
+      localStorage.setItem('theme', this.theme);
     }
+
+    this.applyTheme();
   }
 
   toggleTheme() {
     this.theme = this.theme === 'autumn-modified' ? 'dracula-modified' : 'autumn-modified';
     this.applyTheme();
-    sessionStorage.setItem('theme', this.theme);
+    localStorage.setItem('theme', this.theme);
   }
 
   private applyTheme() {

@@ -1,0 +1,49 @@
+<div class="w-full h-full flex flex-col items-center justify-center gap-8">
+  <div>
+    <img
+      [src]="'assets/images/' + coinResultData.coinImage + '.svg'"
+      alt="Coin Result"
+      class="w-128 h-128 pt-8"
+      [class.invert]="isDark$ | async"
+    />
+  </div>
+
+  <div
+    class="w-full bg-base-100 rounded-xl justify-between shadow-lg p-6 flex flex-1 items-center gap-6 text-center"
+  >
+    <div class="flex flex-col gap-2">
+      <span class="text-lg font-semibold text-primary">Result:</span>
+      <span class="text-2xl font-bold">{{ coinResultData.result || '???' }}</span>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <span class="text-lg font-semibold text-primary">Bet Status:</span>
+      <span
+        class="text-2xl font-bold"
+        [ngClass]="{
+          'text-success': coinResultData.betStatus === 'won',
+          'text-error': coinResultData.betStatus === 'lost'
+        }"
+      >
+        {{ coinResultData.betStatus || '???' }}
+      </span>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <span class="text-lg font-semibold text-primary">Bet Amount:</span>
+      <span class="text-2xl font-bold">{{ coinResultData.displayedBetAmount || '???' }}</span>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <span class="text-lg font-semibold text-primary">Payout:</span>
+      <span
+        class="text-2xl font-bold"
+        [ngClass]="{
+          'animate-shine': coinResultData.payout && coinResultData.payout > 0
+        }"
+      >
+        {{ coinResultData.payout ?? '???' }}
+      </span>
+    </div>
+  </div>
+</div>

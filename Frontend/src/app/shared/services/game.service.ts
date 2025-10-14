@@ -3,16 +3,30 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { GetGames, Game } from './get-games.service';
+import { GetGames } from './get-games.service';
+import { Game } from '../interfaces/game.interface';
+import { Round } from '../interfaces/round.interface';
 
 @Injectable({ providedIn: 'root' })
 export class GameService {
   private readonly API_URL = environment.KEY_TO_READ;
   private gamesSubject = new BehaviorSubject<Game[]>([]);
   public games$ = this.gamesSubject.asObservable();
+  public currentRoundSubject = new BehaviorSubject<Round | null>(null);
+  currentRound$ = this.currentRoundSubject.asObservable();
 
   constructor(private http: HttpClient, private router: Router, private getGames: GetGames) {
     this.loadGamesFromSession();
+    const storedRound = sessionStorage.getItem('currentRound');
+    if (storedRound) {
+      try {
+        const round = JSON.parse(storedRound) as Round;
+        this.currentRoundSubject.next(round);
+        console.log('Restored round from sessionStorage:', round);
+      } catch {
+        sessionStorage.removeItem('currentRound');
+      }
+    }
   }
 
   private loadGamesFromSession() {
@@ -59,9 +73,15 @@ export class GameService {
     }
 
     this.http
-      .post(`${this.API_URL}/rounds/start`, { gameId: game.id }, { withCredentials: true })
+      .post<Round>(`${this.API_URL}/rounds/start`, { gameId: game.id }, { withCredentials: true })
       .subscribe({
-        next: () => this.router.navigate(['/home' + redirectUrl]),
+        next: (round) => {
+          this.currentRoundSubject.next(round);
+
+          sessionStorage.setItem('currentRound', JSON.stringify(round));
+
+          this.router.navigate(['/home' + redirectUrl]);
+        },
         error: (err) => console.error(err),
       });
   }

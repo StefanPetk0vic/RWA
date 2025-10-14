@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { setUser, clearUser } from './user.actions';
-import { UserProfile } from '../auth/auth.service';
+import { UserProfile } from '../../shared/interfaces/user.interface';
 
 export interface UserState {
   user: UserProfile | null;

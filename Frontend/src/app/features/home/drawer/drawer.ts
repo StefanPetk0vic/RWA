@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GameService } from '../../../shared/services/game.service';
-import { Game } from '../../../shared/services/get-games.service';
+import { Game } from '../../../shared/interfaces/game.interface';
 
 @Component({
   selector: 'app-drawer',
