@@ -43,16 +43,16 @@ export class HorseResult implements OnInit, OnDestroy {
       const maxPosition = Math.max(...Object.values(this.horsePositions));
 
       for (const horse of this.horses) {
-        let move = Math.floor(Math.random() * 3);
+        let move = Math.floor(Math.random() * 4);
         //STOP OTHER HORSES FROM WINNING
         if (horse !== winningHorse && this.horsePositions[horse] === maxPosition) {
           move = 0;
         }
 
-        this.horsePositions[horse] = Math.min(90, this.horsePositions[horse] + move);
+        this.horsePositions[horse] = Math.min(95, this.horsePositions[horse] + move);
       }
 
-      if (this.horsePositions[winningHorse] >= 90) {
+      if (this.horsePositions[winningHorse] >= 95) {
         clearInterval(this.interval);
         this.winner = winningHorse;
         console.log('🏆 Race finished! Winner:', winningHorse);

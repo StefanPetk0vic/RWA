@@ -1,46 +1,66 @@
-<div
-  class="bg-base-200 rounded-xl shadow-xl p-8 flex flex-col items-center gap-8 mx-auto my-12 max-w-md"
->
-  <h2 class="text-3xl font-bold mb-6 rounded-lg bg-base-200 shadow-xl p-2">🎰 Slot Machine</h2>
-  <div class="grid grid-rows-3 gap-4 w-full">
-    <div *ngFor="let row of displayGrid" class="grid grid-cols-3 gap-4 w-full">
-      <div
-        *ngFor="let cell of row"
-        class="text-5xl flex items-center justify-center w-20 h-20 bg-base-200 rounded-lg shadow-md transition-transform duration-150"
-        [class.animate-pulse]="spinning"
-      >
-        {{ cell }}
+<div class="h-full w-full">
+  <div
+    class="bg-base-200 rounded-lg shadow-md p-3 flex flex-col items-center gap-3 mx-auto max-w-md my-10 pb-10 relative"
+  >
+    <h2 class="text-2xl font-bold bg-base-100 rounded-md shadow-md px-3 py-1 m-4">
+      🎰 Slot Machine
+    </h2>
+
+    <!-- Slot Grid -->
+    <div class="flex justify-center w-full">
+      <div class="grid grid-rows-3 gap-4">
+        <div *ngFor="let row of displayGrid" class="grid grid-cols-3 gap-4 justify-items-center">
+          <div
+            *ngFor="let cell of row"
+            class="text-4xl flex items-center justify-center w-16 h-16 bg-base-100 rounded-md shadow-sm transition-transform duration-150"
+            [class.animate-pulse]="spinning"
+          >
+            {{ cell }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex flex-col items-center gap-4 w-full">
+      <input
+        type="number"
+        placeholder="Enter your bet"
+        class="input input-bordered text-center text-lg py-1 w-full max-w-xs opacity-70"
+        [(ngModel)]="betAmount"
+      />
+
+      <div class="flex gap-2 w-full max-w-xs justify-between">
+        <button
+          class="btn btn-success text-base font-bold relative transform transition-all duration-150 hover:translate-y-1 hover:shadow-[0_2px_0_#065f46] shadow-[0_3px_0_#065f46] active:translate-y-1 active:shadow-[0_1px_0_#065f46] flex-1"
+          (click)="placeBet()"
+        >
+          <span class="relative z-10">BET</span>
+          <span
+            class="absolute inset-0 bg-gradient-to-b from-green-300/30 to-green-900/40 rounded-md -z-10"
+          ></span>
+        </button>
+
+        <button
+          class="btn btn-warning text-base font-bold relative transform transition-all duration-150 hover:translate-y-1 hover:shadow-[0_2px_0_#b45309] shadow-[0_3px_0_#92400e] active:translate-y-1 active:shadow-[0_1px_0_#78350f] flex-1"
+          (click)="onPlayAgain()"
+        >
+          <span class="relative z-10">PLAY AGAIN</span>
+          <span
+            class="absolute inset-0 bg-gradient-to-b from-orange-300/30 to-orange-900/40 rounded-md -z-10"
+          ></span>
+        </button>
       </div>
     </div>
   </div>
-
-  <div class="flex flex-col items-center gap-4 w-full">
-    <input
-      type="number"
-      placeholder="Enter your bet"
-      class="input input-bordered text-center text-2xl py-2 w-full max-w-xs opacity-40"
-      [(ngModel)]="betAmount"
-    />
-    <div class="flex gap-4 w-full max-w-xs justify-between">
-      <button
-        class="btn btn-success text-lg font-bold relative transform transition-all duration-150 hover:translate-y-1 hover:shadow-[0_2px_0_#065f46] shadow-[0_4px_0_#065f46] active:translate-y-1.5 active:shadow-[0_1px_0_#065f46] flex-1"
-        (click)="placeBet()"
-      >
-        <span class="relative z-10">BET</span>
-        <span
-          class="absolute inset-0 bg-gradient-to-b from-green-300/30 to-green-900/40 rounded-lg -z-10"
-        ></span>
-      </button>
-
-      <button
-        class="btn btn-warning text-lg font-bold relative transform transition-all duration-150 hover:translate-y-1 hover:shadow-[0_2px_0_#b45309] shadow-[0_4px_0_#92400e] active:translate-y-1.5 active:shadow-[0_1px_0_#78350f] flex-1"
-        (click)="onPlayAgain()"
-      >
-        <span class="relative z-10">PLAY AGAIN</span>
-        <span
-          class="absolute inset-0 bg-gradient-to-b from-orange-300/30 to-orange-900/40 rounded-lg -z-10"
-        ></span>
-      </button>
+  <div
+    *ngIf="payoutAmount !== null"
+    class="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-20 animate-fadeIn"
+  >
+    <div
+      class="bg-base-100 text-center text-2xl font-bold py-6 px-10 rounded-lg shadow-2xl animate-bounce"
+    >
+      💰 You won {{ payoutAmount }} credits!
     </div>
   </div>
 </div>

@@ -13,6 +13,8 @@ import { GameService } from '../../../shared/services/game.service';
 })
 export class SlotMachine {
   betAmount: number | null = null;
+  payoutAmount: number | null = null;
+  showingPopup = false;
 
   symbols: string[] = ['🍒', '⭐', '7', '🎁', '💎', '🍋', '🍀', '🔔', '🍉'];
   displayGrid: string[][] = [
@@ -52,23 +54,22 @@ export class SlotMachine {
     try {
       const betResponse = await this.placeBetService.placeBet(payload);
       if (!betResponse) return;
+
       const roundResult = await this.placeBetService.resolveRound(roundId);
       if (!roundResult?.result) {
         console.error('Round result is missing!');
         this.spinning = false;
         return;
       }
+
       const finalGrid: string[][] = roundResult.result
         .split('|')
         .map((row: string) => row.split('-'));
 
-      if (finalGrid.length !== 3 || finalGrid.some((row) => row.length !== 3)) {
-        console.error('Final grid is not 3x3:', finalGrid);
-        this.spinning = false;
-        return;
-      }
-
       await this.spinAnimation(finalGrid);
+
+      this.payoutAmount = roundResult.payout ?? 0;
+      this.showPayoutPopup();
     } catch (err) {
       console.error(err);
     } finally {
@@ -100,6 +101,16 @@ export class SlotMachine {
     });
   }
 
+  private showPayoutPopup(): void {
+    this.showingPopup = true;
+
+    // Keep visible for 1.5 seconds, then hide with fade-out
+    setTimeout(() => {
+      this.showingPopup = false;
+      setTimeout(() => (this.payoutAmount = null), 300); // Wait for fade-out animation
+    }, 1500);
+  }
+
   onPlayAgain(): void {
     this.betAmount = null;
     this.displayGrid = [
@@ -108,6 +119,7 @@ export class SlotMachine {
       ['🍀', '🔔', '🍉'],
     ];
     this.spinning = false;
+    this.payoutAmount = null;
 
     if (this.spinInterval) {
       clearInterval(this.spinInterval);

@@ -4,11 +4,12 @@ import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { JwtService } from '@nestjs/jwt';
+import { AdminSeeder } from './admin.seeder';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
-  providers: [UserService, JwtService],
+  providers: [UserService, JwtService, AdminSeeder],
   controllers: [UserController],
-  exports: [UserService], // da AuthService može da koristi UserService
+  exports: [UserService, AdminSeeder], // da AuthService može da koristi UserService
 })
 export class UserModule {}

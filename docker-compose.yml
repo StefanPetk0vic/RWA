@@ -1,0 +1,45 @@
+services:
+  postgres-db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: stefan123
+      POSTGRES_DB: RWA
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  nest-backend:
+    build: ./Backend
+    container_name: nest-backend
+    env_file:
+      - ./Backend/.env
+    depends_on:
+      - postgres-db
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    restart: on-failure
+
+  angular-frontend:
+    container_name: angular-frontend
+    build:
+      context: ./Frontend
+    ports:
+      - "4200:80"
+    networks:
+      - app-network
+    depends_on:
+      - nest-backend
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  pgdata:

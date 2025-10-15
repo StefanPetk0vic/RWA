@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import * as cookieParser from 'cookie-parser';
 import { GameSeeder } from './game/game.seeder';
+import { AdminSeeder } from './user/admin.seeder';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,6 +22,7 @@ async function bootstrap() {
   app.use(LoggerMiddleware);
   app.use(cookieParser());
   await app.get(GameSeeder).seed();
+  await app.get(AdminSeeder).seed();
   await app.listen(process.env.PORT ?? 3000);
 }
 

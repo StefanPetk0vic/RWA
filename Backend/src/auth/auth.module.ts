@@ -11,6 +11,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [UserModule, JwtModule.registerAsync(jwtConfig.asProvider())],
   controllers: [AuthController],
   providers: [AuthService, PasswordService],
-  exports: [PasswordService,JwtModule],
+  exports: [PasswordService, JwtModule],
 })
 export class AuthModule {}
